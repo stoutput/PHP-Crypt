@@ -1,2 +1,2 @@
 # php-crypt
-Barebones Cryptography Library for PHP – libsodium (NaCl), OpenSSL, Mcrypt, and more
+A lightweight, barebones cryptography library for PHP, with support for libsodium (NaCl), OpenSSL, Mcrypt, and more.
