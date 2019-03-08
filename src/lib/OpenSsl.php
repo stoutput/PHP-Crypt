@@ -1,5 +1,7 @@
 <?php
 
+namespace BenjaminStout\Crypt\Crypt;
+
 class OpenSsl extends Crypt
 {
 

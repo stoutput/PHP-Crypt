@@ -1,5 +1,7 @@
 <?php
 
+namespace BenjaminStout\Crypt\Crypt;
+
 class Sodium extends Crypt
 {
     /**

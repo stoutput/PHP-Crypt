@@ -1,32 +1,32 @@
 <?php
+namespace BenjaminStout\Crypt;
+
+use BenjaminStout\Crypt\lib\Mcrypt;
+use BenjaminStout\Crypt\lib\OpenSsl;
+use BenjaminStout\Crypt\lib\Sodium;
+
 /**
- * Custom cryptography library to facilitate all cryptographic measures
+ * Cryptography class to facilitate all cryptographic measures
  *
  */
-
-namespace Crypt;
-
-use Crypt\Mcrypt;
-use Crypt\OpenSsl;
-use Crypt\Sodium;
-
 class Crypt
 {
     protected static $key = NULL;
 
-    private static $engine = NULL;
+    private static $lib = NULL;
 
     /**
      * Constructor
      */
-    public function __construct($key = null, $engine = 'Sodium')
+    public function __construct($key = null, $lib = 'Sodium')
     {
         if ($key !== null) {
             self::set_key((string)$key);
             self::memzero($key);
         }
-        if (class_exists((string)$engine)) {
-            self::$engine = $engine;
+        if (class_exists("\Crypt\{$lib}")) {
+            require_once(dirname(__FILE__) . "/{$lib}.php");
+            self::$lib = new $lib();
         }
     }
 
@@ -37,9 +37,9 @@ class Crypt
      */
     public static function memzero(&$var) {
         if (is_string($var)) {
-            $len = strlen($var) - 1;
-            for( $i = -1; $i < $len;)
-                $var[++$i] = "\0";
+            $len = strlen($var);
+            for( $i = -1; ++$i < $len;)
+                $var[$i] = "\0";
             }
         } elseif (is_array($var)) {
             array_map(function() { return NULL; }, $var);
@@ -56,11 +56,11 @@ class Crypt
      */
     public static function encrypt($plaintext, $base64 = true)
     {
-        return self::$engine::encrypt($plaintext, $base64);
+        return self::$lib::encrypt($plaintext, $base64);
     }
 
     public static function decrypt($cipher, $base64 = true)
     {
-        return self::$engine::decrypt($cipher, $base64, $redactCC);
+        return self::$lib::decrypt($cipher, $base64, $redactCC);
     }
 }
