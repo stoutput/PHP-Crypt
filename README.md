@@ -13,6 +13,7 @@ PHP-Crypt allows you to quickly integrate a suite of modern cryptographic librar
 ## Installation
 
 __Git__: `git add submodule git@github.com:benjaminstout/php-crypt.git <path/to/folder>`  
+*or*  
 __Composer__: `composer require benjaminstout/php-crypt`
 
 If using with CakePHP, don't forget to add `Plugin::load('BenjaminStout/Crypt')` to your `bootstrap.php`.
@@ -22,10 +23,10 @@ If using with CakePHP, don't forget to add `Plugin::load('BenjaminStout/Crypt')`
 
 __Instantiate a new instance__:  
 ```php
-$this->Crypt = new Crypt('<library>', '<key>');
+$this->Crypt = new Crypt('<library>', ['key' => '<key>']);
 ```
 *Where*:  
-`<library>` is the cryptography library to use (Sodium [default], OpenSsl, Mcrypt, ...)  
+`<library>` is the cryptography library to use (Sodium [default], Openssl, Mcrypt, ...)  
 `<key>` is an optional key to use for encryption.
 
 __Encrypt a string__:  
@@ -39,18 +40,38 @@ $this->Crypt::decrypt('eNcRyPtEd');
 ```
 
 
-*__Note__*: If `<key>` is left unspecified during instantiation, php-crypt will look for an existing key located first at `Config::$config['key<library>']` and then `Config::$config['keyPath']`. If no existing key is found, it automatically generates a suitable random key to use for the library. See [encryption keys](#encryption-keys) for more info.
-
-
 ## Encryption Keys
 
-For security purposes, keys are stored in the filesystem well outside of WWW_ROOT by default. Existing key files should be __lowercase__, with a suffix of `.key`, and named after the library to which they belong. Ex: `keyOpenSsl => 'openssl.key'`. 
+If `<key>` is left unspecified during instantiation, PHP-Crypt will look for an existing key located first at `Config::$config['keyPath<library>']` and then `Config::$config['keyPath']`. If no existing key is found, PHP-Crypt automatically generates and saves a suitable random key for use by the library.
 
-Passing a key into the constructor will create an alternate `.custom.key` file (to avoid overwriting pre-existing keys). For example:
+For security purposes, keys are stored in the filesystem well outside of WWW_ROOT by default. Existing key files should be __lowercase__, with a suffix of `.key`, and named after the library to which they belong. Ex: `keyPathOpenssl => 'openssl.key'`. 
+
+### *Examples*:
+
+Allowing PHP-Crypt to generate your keys for you without any pre-existing key file,
 ```php
-$this->Crypt = new Crypt('OpenSsl', 'KeY123');
+$this->Crypt = new Crypt('Openssl');
+```  
+will automatically save the automatically-generated random key to `openssl.key` under `Config::$config['keyPath']`.
+
+
+Whereas, passing a key into the constructor will create an alternate `.custom.key` file (to avoid overwriting pre-existing keys). For example:
+```php
+$this->Crypt = new Crypt('Openssl', 'KeY123');
 ```
 Would create a file under `Config::$config['keyPath']` named openssl.custom.key with the contents `KeY123`. Just – please don't use this key...
+
+
+If you wish to specify a unique path to a key for a library to use, pass in a value for `'keyPath<library>'` during instantiation:
+```php
+$this->Crypt = new Crypt('Openssl', [
+    'keyPathOpenssl' => '/path/to/openssl.key',
+]);
+```
+or, set it afterwards:
+```php
+Crypt::setPath('Openssl', '/path/to/openssl.key');
+```
 
 
 ## Testing
