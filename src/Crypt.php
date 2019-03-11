@@ -7,7 +7,7 @@ use BenjaminStout\Crypt\lib\Sodium;
 include('autoload.php');
 
 /**
- * Cryptography class to facilitate all cryptographic measures
+ * Cryptography class to facilitate cryptographic measures
  *
  */
 class Crypt
@@ -64,6 +64,38 @@ class Crypt
             array_map(function() { return NULL; }, $var);
         }
         $var = NULL;
+    }
+
+    /**
+     * Sets the key path and subsequently initializes or re-initializes
+     * the encryption key for a specified library
+     *
+     * @param string $path
+     * @return bool success
+     * @access public
+     * @static
+     */
+    public static function setPath($lib, $path) {
+        if (!is_string($lib) || !is_string($path)) {
+            return false;
+        }
+
+        $lib = strtolower($lib);
+        $path = strtolower($lib);
+
+        if ($lib == 'all') {
+            if (!is_dir($path)) {
+                return false;
+            }
+            Config::write('keyPath', $path);
+            return true;
+        }
+
+        if (!is_file($path) || basename($path) !=  "$lib.key") {
+            return false;
+        }
+        Config::write('keyPath' . ucfirst($lib), $path);
+        return true;
     }
 
     /**
