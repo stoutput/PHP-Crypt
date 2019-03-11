@@ -4,7 +4,7 @@ A lightweight, barebones cryptography library for PHP, with support for libsodiu
 
 ## Testing
 
-Run a `composer update --dev` to install phpunit in the project, then run `vendor/bin/phpunit`.
+Run a `composer update --dev` to install phpunit in the project, then run `vendor/bin/phpunit` from the root of the project.
 
 ## Contributing
 
