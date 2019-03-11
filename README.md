@@ -49,30 +49,28 @@ For security purposes, keys are stored in the filesystem well outside of WWW_ROO
 
 ### *Examples*:
 
-Allowing PHP-Crypt to generate your keys for you without any pre-existing key file,
-```php
-$this->Crypt = new Crypt('Openssl');
-```  
-will automatically save the automatically-generated random key to `openssl.key` under `Config::$config['keyPath']`.
+* Allowing PHP-Crypt to generate your keys for you without any pre-existing key file:
+  ```php
+  $this->Crypt = new Crypt('Openssl');
+  ```  
+  automatically saves the generated random key to `openssl.key` under `Config::$config['keyPath']`.
 
+* Whereas, passing a key into the constructor will create an alternate `.custom.key` file (to avoid overwriting pre-existing keys). For example:
+  ```php
+  $this->Crypt = new Crypt('Openssl', 'KeY123');
+  ```
+  Would create a file under `Config::$config['keyPath']` named openssl.custom.key with the contents `KeY123`.
 
-Whereas, passing a key into the constructor will create an alternate `.custom.key` file (to avoid overwriting pre-existing keys). For example:
-```php
-$this->Crypt = new Crypt('Openssl', 'KeY123');
-```
-Would create a file under `Config::$config['keyPath']` named openssl.custom.key with the contents `KeY123`. Just – please don't use this key...
-
-
-If you wish to specify a unique path to a key for a library to use, pass in a value for `'keyPath<library>'` during instantiation:
-```php
-$this->Crypt = new Crypt('Openssl', [
-    'keyPathOpenssl' => '/path/to/openssl.key',
-]);
-```
-or, set it afterwards:
-```php
-Crypt::setPath('Openssl', '/path/to/openssl.key');
-```
+* If you wish to specify a unique path to a key for a library to use, pass in a value for `'keyPath<library>'` during instantiation:
+  ```php
+  $this->Crypt = new Crypt('Openssl', [
+      'keyPathOpenssl' => '/path/to/openssl.key',
+  ]);
+  ```
+  or, set it afterwards:
+  ```php
+  Crypt::setPath('Openssl', '/path/to/openssl.key');
+  ```
 
 
 ## Testing
