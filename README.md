@@ -14,8 +14,8 @@ PHP-Crypt allows you to quickly integrate a suite of modern cryptographic librar
 
 PHP-Crypt supports installation in your PHP app through either [composer](https://getcomposer.org/) or [git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules).
 
-__Composer__: `composer require benjaminstout/php-crypt`
-__Git__: `git add submodule git@github.com:benjaminstout/php-crypt.git <path/to/folder>`   
+__Composer__: `composer require benjaminstout/php-crypt`  
+__Git__: `git add submodule git@github.com:benjaminstout/php-crypt.git <path/to/folder>`
 
 *__Note__*: If using with CakePHP, don't forget to add `Plugin::load('BenjaminStout/Crypt')` to your `bootstrap.php`.
 
