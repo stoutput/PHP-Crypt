@@ -42,7 +42,7 @@ class Crypt
         if (!self::$lib instanceof $class) {
             throw new \Exception("Crypt->__construct(): Unable to load the cryptography library: {$lib}");
         }
-        self::$lib::init_key($key);
+        self::$lib::initKey($key);
         self::memzero($key);
     }
 
@@ -57,12 +57,12 @@ class Crypt
     {
         if (is_string($var)) {
             $len = strlen($var);
-            for( $i = -1; ++$i < $len;) {
+            for ($i = -1; ++$i < $len;) {
                 $var[$i] = "\0";
             }
         } elseif (is_array($var)) {
             array_map(function () {
-                return null; 
+                return null;
             }, $var);
         }
         $var = null;

@@ -5,11 +5,11 @@ namespace BenjaminStout\Crypt;
 class Config
 {
     private static $config = [
-        'key' => NULL,                              // Currently-set encryption key
+        'key' => null,                              // Currently-set encryption key
         'keyPath' => __DIR__ . '..' . DS . 'keys',  // Path to key store (default is ../keys)
-        'keySodium' => NULL,                        // Unique path to Sodium key (used if valid)
-        'keyOpenssl' => NULL,                       // Unique path to OpenSSL key (used if valid)
-        'keyMcrypt' => NULL,                        // Unique path to Mcrypt key (used if valid)
+        'keySodium' => null,                        // Unique path to Sodium key (used if valid)
+        'keyOpenssl' => null,                       // Unique path to OpenSSL key (used if valid)
+        'keyMcrypt' => null,                        // Unique path to Mcrypt key (used if valid)
     ];
 
     /**
@@ -27,15 +27,15 @@ class Config
 
     /**
      * Returns the value from self::$config at index $key if set
-     * Otherwise, returns NULL
+     * Otherwise, returns null
      *
      * @var string key
-     * @return mixed value, else NULL
+     * @return mixed value, else null
      * @access public
      */
     public static function read($key)
     {
-        return isset(self::$config[$key]) ? self::$config[$key] : NULL;
+        return isset(self::$config[$key]) ? self::$config[$key] : null;
     }
 
     /**

@@ -11,17 +11,10 @@ class Mcrypt extends Crypt
     public function __construct()
     {
     }
-    /**
-     * Secret key for all mcrypt encryption/decryption
-     * NOTE: altering the behavior of this function will break decryption of all existing Mcrypt-encrypted data
-     *
-     * @return string
-     * @access public
-     * @static
-     */
-    public static function mcrypt_key()
-    {
 
+    public static function initKey($key)
+    {
+        Config::write('key', $key);
     }
 
     /**
@@ -33,7 +26,7 @@ class Mcrypt extends Crypt
      * @access public
      * @static
      */
-    public static function encrypt_mcrypt($plaintext, $base64 = true)
+    public static function encrypt($plaintext, $base64 = true)
     {
         if (empty($plaintext)) {
             return '';
@@ -57,7 +50,7 @@ class Mcrypt extends Crypt
      * @access public
      * @static
      */
-    public static function decrypt_mcrypt($cipher, $base64 = true)
+    public static function decrypt($cipher, $base64 = true)
     {
         $secretKey = self::mcrypt_key();
         $iv_size = mcrypt_get_iv_size(MCRYPT_3DES, MCRYPT_MODE_ECB);

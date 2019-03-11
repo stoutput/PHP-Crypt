@@ -18,7 +18,7 @@ class CryptInterface
      * @access public
      * @static
      */
-    public static function init_key($key);
+    public static function initKey($key);
 
     /**
      * Encrypts (and base64 encodes) using Sodium encryption

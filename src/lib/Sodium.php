@@ -16,20 +16,7 @@ class Sodium
         }*/
     }
 
-    /**
-     * Secret key for all libsodium encryption/decryption
-     * NOTE: altering the behavior of this function will break decryption of all existing Sodium-encrypted data
-     *
-     * @return string
-     * @access private
-     * @static
-     */
-    private static function key()
-    {
-
-    }
-
-    public static function init_key($key)
+    public static function initKey($key)
     {
         Config::write('key', $key);
     }

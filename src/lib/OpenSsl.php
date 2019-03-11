@@ -14,17 +14,9 @@ class OpenSsl extends Crypt
     {
     }
 
-    /**
-     * Secret key for all OpenSSL encryption/decryption
-     * NOTE: altering the behavior of this function will break decryption of all existing OpenSSL-encrypted data
-     *
-     * @return string
-     * @access private
-     * @static
-     */
-    private static function key())
+    public static function initKey($key)
     {
-
+        Config::write('key', $key);
     }
 
     /**
