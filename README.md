@@ -35,7 +35,7 @@ __Encrypt a string__:
 $this->Crypt::encrypt('string');
 ```
 
-__Decrypt a cipher__:  
+__Decrypt ciphertext__:  
 ```php
 $this->Crypt::decrypt('eNcRyPtEd');
 ```
