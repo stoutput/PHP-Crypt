@@ -7,7 +7,7 @@ PHP-Crypt allows you to quickly integrate a suite of modern cryptographic librar
 
 * PHP-Crypt features [*authenticated encryption*](https://en.wikipedia.org/wiki/Authenticated_encryption) straight out of the box (with a supported library – [Sodium](https://libsodium.gitbook.io/doc/secret-key_cryptography/authenticated_encryption), [OpenSSL](https://wiki.openssl.org/index.php/EVP_Authenticated_Encryption_and_Decryption), etc.)
 
-* PHP-Crypt is easily extensible – just drop an implementation of your favorite cryptography library into src/lib, and call `new Crypt('<yourClass>')` when instantiating PHP-Crypt. It couldn't be easier! While you're at it, [submit a PR](https://github.com/benjaminstout/php-crypt/pull/new/master) with your shiny new library!
+* PHP-Crypt is easily extensible – just drop an implementation of your favorite cryptography library into src/lib, and call `new Crypt('<yourClass>')` when instantiating PHP-Crypt. It couldn't be easier! While you're at it, [submit a PR](https://github.com/benjaminstout/php-crypt/pull/new/master)!
 
 
 ## Installation
