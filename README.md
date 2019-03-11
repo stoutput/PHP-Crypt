@@ -43,7 +43,7 @@ $this->Crypt::decrypt('eNcRyPtEd');
 
 ## Encryption Keys
 
-If `<key>` is left unspecified during instantiation, PHP-Crypt will look for an existing key located first at `Config::$config['keyPath<library>']` and then `Config::$config['keyPath']`. If no existing key is found, PHP-Crypt automatically generates and saves a suitable random key for use by the library.
+If the encryption key is left unspecified during instantiation, PHP-Crypt will look for an existing key located first at `Config::$config['keyPath<library>']` and then `Config::$config['keyPath']`. If no existing key is found, PHP-Crypt automatically generates and saves a suitable random key for use by the library.
 
 For security purposes, keys are stored in the filesystem well outside of WWW_ROOT by default. Existing key files should be __lowercase__, with a suffix of `.key`, and named after the library to which they belong. Ex: `keyPathOpenssl => 'openssl.key'`. 
 
