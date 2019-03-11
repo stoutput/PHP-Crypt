@@ -22,7 +22,7 @@ __Git__: `git add submodule git@github.com:benjaminstout/php-crypt.git <path/to/
 
 ## Getting Started
 
-__Instantiate a new instance__:  
+__Instantiate a new instance of PHP-Crypt__:  
 ```php
 $this->Crypt = new Crypt('<library>', ['key' => '<key>']);
 ```
