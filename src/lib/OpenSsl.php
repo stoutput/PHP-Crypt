@@ -1,6 +1,6 @@
 <?php
 
-namespace BenjaminStout\Crypt\Crypt;
+namespace BenjaminStout\Crypt\lib;
 
 class OpenSsl extends Crypt
 {
@@ -19,6 +19,7 @@ class OpenSsl extends Crypt
      * NOTE: altering the behavior of this function will break decryption of all existing OpenSSL-encrypted data
      *
      * @return string
+     * @access private
      * @static
      */
     private static function key())
@@ -33,6 +34,8 @@ class OpenSsl extends Crypt
      * @param bool $base64 [true]
      * @param string $method (optional)
      * @return string $cipher
+     * @access public
+     * @static
      */
     public static function encrypt($plaintext, $base64 = true)
     {
@@ -59,6 +62,8 @@ class OpenSsl extends Crypt
      * @param bool $base64 [true]
      * @param string $method (optional)
      * @return string $plaintext
+     * @access public
+     * @static
      */
     public static function decrypt($cipher, $base64 = true)
     {

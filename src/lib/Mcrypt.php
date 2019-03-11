@@ -1,11 +1,12 @@
 <?php
 
-namespace BenjaminStout\Crypt\Crypt;
+namespace BenjaminStout\Crypt\lib;
 
 class Mcrypt extends Crypt
 {
     /**
      * Constructor
+     * @access public
      */
     public function __construct()
     {
@@ -15,6 +16,8 @@ class Mcrypt extends Crypt
      * NOTE: altering the behavior of this function will break decryption of all existing Mcrypt-encrypted data
      *
      * @return string
+     * @access public
+     * @static
      */
     public static function mcrypt_key()
     {
@@ -27,6 +30,8 @@ class Mcrypt extends Crypt
      * @param string $plaintext
      * @param bool $base64 [true]
      * @return string $cipher
+     * @access public
+     * @static
      */
     public static function encrypt_mcrypt($plaintext, $base64 = true)
     {
@@ -49,6 +54,8 @@ class Mcrypt extends Crypt
      * @param string $cipher
      * @param bool $base64 [true]
      * @return string $plaintext
+     * @access public
+     * @static
      */
     public static function decrypt_mcrypt($cipher, $base64 = true)
     {

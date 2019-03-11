@@ -1,1 +1,6 @@
+# –––– Composer ––––
+composer.lock
 /vendor/
+
+# –––– PHPUnit––––
+.phpunit*
