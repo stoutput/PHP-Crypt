@@ -8,17 +8,13 @@ namespace BenjaminStout\Crypt;
  * @package BenjaminStout\Crypt\Tests
  * @author  Benjamin Stout
  */
-class CryptTest extends \PHPUnit_Framework_TestCase {
+class CryptTest extends \PHPUnit_Framework_TestCase
+{
     /**
      * @var Crypt
      * @access public
      */
     public $Crypt;
-
-    public function __construct()
-    {
-        require_once(__DIR__ . '/.././src/Crypt.php');
-    }
 
     /**
      * @access public

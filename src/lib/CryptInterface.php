@@ -2,7 +2,8 @@
 
 namespace BenjaminStout\Crypt\lib;
 
-class CryptInterface {
+class CryptInterface
+{
     /**
      * Constructor
      */

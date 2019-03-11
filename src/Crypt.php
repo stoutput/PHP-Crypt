@@ -4,11 +4,10 @@ namespace BenjaminStout\Crypt;
 use BenjaminStout\Crypt\Config;
 use BenjaminStout\Crypt\lib\Sodium;
 
-include('autoload.php');
+require_once 'Autoload.php';
 
 /**
  * Cryptography class to facilitate cryptographic measures
- *
  */
 class Crypt
 {
@@ -18,7 +17,7 @@ class Crypt
      * @access protected
      * @static
      */
-    protected static $key = NULL;
+    protected static $key = null;
 
     /**
      * Holds the current cryptography library class object
@@ -26,7 +25,7 @@ class Crypt
      * @access private
      * @static
      */
-    private static $lib = NULL;
+    private static $lib = null;
 
     /**
      * Constructor
@@ -36,7 +35,7 @@ class Crypt
      * @throws Exception (unable to instantiate cryptography library)
      * @access public
      */
-    public function __construct($lib = 'Sodium', $key = NULL)
+    public function __construct($lib = 'Sodium', $key = null)
     {
         $class = "BenjaminStout\Crypt\lib\\$lib";
         self::$lib = new $class();
@@ -54,16 +53,19 @@ class Crypt
      * @access public
      * @static
      */
-    public static function memzero(&$var) {
+    public static function memzero(&$var)
+    {
         if (is_string($var)) {
             $len = strlen($var);
             for( $i = -1; ++$i < $len;) {
                 $var[$i] = "\0";
             }
         } elseif (is_array($var)) {
-            array_map(function() { return NULL; }, $var);
+            array_map(function () {
+                return null; 
+            }, $var);
         }
-        $var = NULL;
+        $var = null;
     }
 
     /**
@@ -75,7 +77,8 @@ class Crypt
      * @access public
      * @static
      */
-    public static function setPath($lib, $path) {
+    public static function setPath($lib, $path)
+    {
         if (!is_string($lib) || !is_string($path)) {
             return false;
         }
