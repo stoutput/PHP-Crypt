@@ -59,7 +59,7 @@ For security purposes, keys are stored in the filesystem well outside of WWW_ROO
   ```php
   $this->Crypt = new Crypt('Openssl', 'KeY123');
   ```
-  Would create a file under `Config::$config['keyPath']` named openssl.custom.key with the contents `KeY123`.
+  Creates a file under `Config::$config['keyPath']` named openssl.custom.key with the contents `KeY123`.
 
 * If you wish to specify a unique path to a key for a library to use, pass in a value for `'keyPath<library>'` during instantiation:
   ```php
