@@ -22,9 +22,8 @@ class Mcrypt implements CryptInterface
      * @param bool $base64 [true]
      * @return string $cipher
      * @access public
-     * @static
      */
-    public static function initKey($key)
+    public function initKey($key)
     {
         Config::write('key', $key);
     }
@@ -36,9 +35,8 @@ class Mcrypt implements CryptInterface
      * @param bool $base64 [true]
      * @return string $cipher
      * @access public
-     * @static
      */
-    public static function encrypt($plaintext, $base64 = true)
+    public function encrypt($plaintext, $base64 = true)
     {
         if (empty($plaintext)) {
             return '';
@@ -60,9 +58,8 @@ class Mcrypt implements CryptInterface
      * @param bool $base64 [true]
      * @return string $plaintext
      * @access public
-     * @static
      */
-    public static function decrypt($cipher, $base64 = true)
+    public function decrypt($cipher, $base64 = true)
     {
         $secretKey = self::mcrypt_key();
         $iv_size = mcrypt_get_iv_size(MCRYPT_3DES, MCRYPT_MODE_ECB);

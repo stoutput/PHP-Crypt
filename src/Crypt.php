@@ -3,8 +3,6 @@ namespace BenjaminStout\Crypt;
 
 use BenjaminStout\Crypt\Config;
 
-require_once 'Autoload.php';
-
 /**
  * Cryptography class to facilitate cryptographic measures
  */
@@ -36,6 +34,7 @@ class Crypt
      */
     public function __construct($lib = 'Sodium', $key = null)
     {
+        require_once 'Autoload.php';
         $class = __NAMESPACE__ . '\lib\\' . $lib;
         if (!self::$lib instanceof $class) {
             self::$lib = new $class();
