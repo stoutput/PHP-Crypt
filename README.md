@@ -12,7 +12,7 @@ PHP-Crypt allows you to quickly integrate a suite of modern cryptographic librar
 ## Prerequisites
 
 * PHP >= 5.6
-* If on PHP < 7.2, and you would like to use the Sodium library, make sure to [install the libsodium PHP extension](https://paragonie.com/book/pecl-libsodium/read/00-intro.md).
+* If on PHP < 7.2, and you would like to use the Sodium library, make sure to [install libsodium and the sodium PHP extension](https://paragonie.com/book/pecl-libsodium/read/00-intro.md).
 
 ## Installation
 
