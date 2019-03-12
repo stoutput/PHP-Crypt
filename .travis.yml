@@ -1,26 +1,27 @@
 language: php
 
-php:
-  - 5.6
-  - 7.0
-  - 7.1
-  - 7.2
-  - 7.3
-
-sudo: false
+sudo: required
 
 matrix:
   fast_finish: true
-
   include:
     - php: 7.3
       env: PHPCS=1
+    - php: 7.2
+    - php: 7.1
+      env: INSTALL_SODIUM=1
+    - php: 7.0
+      env: INSTALL_SODIUM=1
     - php: 5.6
-      env: PREFER_LOWEST=1
+      env: INSTALL_SODIUM=1 PREFER_LOWEST=1
+
+before_install:
+  - if [[ $INSTALL_SODIUM == 1 ]]; then sudo add-apt-repository ppa:ondrej/php -y; sudo apt-get update -q; sudo apt-get install libsodium-dev -y; fi
 
 install:
-  - if [[ $PREFER_LOWEST != 1 ]]; then composer install --prefer-dist --no-interaction ; fi
-  - if [[ $PREFER_LOWEST == 1 ]]; then composer update --prefer-dist --no-interaction --prefer-lowest --prefer-stable ; fi
+  - if [[ $PREFER_LOWEST != 1 ]]; then composer install --prefer-dist --no-interaction; fi
+  - if [[ $PREFER_LOWEST == 1 ]]; then composer update --prefer-dist --no-interaction --prefer-lowest --prefer-stable; fi
+  - if [[ $INSTALL_SODIUM == 1 ]]; then sudo pecl install -f libsodium; fi
 
 script:
   - sh -c "if [ '$PHPCS' != '1' ]; then vendor/bin/phpunit; fi"
