@@ -2,13 +2,8 @@
 
 namespace BenjaminStout\Crypt\lib;
 
-class CryptInterface
+interface CryptInterface
 {
-    /**
-     * Constructor
-     */
-    public function __construct();
-
     /**
      * Fetches or generates, then saves, the current encryption key
      *
@@ -18,7 +13,7 @@ class CryptInterface
      * @access public
      * @static
      */
-    public static function initKey($key);
+    public function initKey($key);
 
     /**
      * Encrypts (and base64 encodes) using Sodium encryption
@@ -29,7 +24,7 @@ class CryptInterface
      * @access public
      * @static
      */
-    public static function encrypt($plaintext, $base64 = true);
+    public function encrypt($plaintext, $base64 = true);
 
     /**
      * Decrypts (and optionally converts from base64) using sodium decryption
@@ -40,5 +35,5 @@ class CryptInterface
      * @access public
      * @static
      */
-    public static function decrypt($cipher, $base64 = true);
+    public function decrypt($cipher, $base64 = true);
 }

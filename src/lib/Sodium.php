@@ -4,19 +4,28 @@ namespace BenjaminStout\Crypt\lib;
 
 use BenjaminStout\Crypt\Config;
 
-class Sodium
+class Sodium implements CryptInterface
 {
     /**
      * Constructor
      */
     public function __construct()
     {
-        /*if (sodium_init() < 0) {
-            throw new Exception("Crypto::__construct() Error: Sodium encryption library unavailable.");
-        }*/
+        if (!extension_loaded('sodium')) {
+            throw new \Exception("Sodium->__construct(): Sodium PHP extension is not loaded.");
+        }
     }
 
-    public static function initKey($key)
+    /**
+     * Fetches or generates, then saves, the current encryption key
+     *
+     * @param string $plaintext
+     * @param bool $base64 [true]
+     * @return string $cipher
+     * @access public
+     * @static
+     */
+    public function initKey($key)
     {
         Config::write('key', $key);
     }
@@ -30,7 +39,7 @@ class Sodium
      * @access public
      * @static
      */
-    public static function encrypt($plaintext, $base64 = true)
+    public function encrypt($plaintext, $base64 = true)
     {
         if (empty($plaintext)) {
             return '';
@@ -56,7 +65,7 @@ class Sodium
      * @access public
      * @static
      */
-    public static function decrypt($cipher, $base64 = true)
+    public function decrypt($cipher, $base64 = true)
     {
         if (!empty($base64)) {
             $cipher = base64_decode($cipher);

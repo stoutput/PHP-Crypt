@@ -2,7 +2,6 @@
 namespace BenjaminStout\Crypt;
 
 use BenjaminStout\Crypt\Config;
-use BenjaminStout\Crypt\lib\Sodium;
 
 require_once 'Autoload.php';
 
@@ -37,12 +36,14 @@ class Crypt
      */
     public function __construct($lib = 'Sodium', $key = null)
     {
-        $class = "BenjaminStout\Crypt\lib\\$lib";
-        self::$lib = new $class();
+        $class = __NAMESPACE__ . '\lib\\' . $lib;
         if (!self::$lib instanceof $class) {
-            throw new \Exception("Crypt->__construct(): Unable to load the cryptography library: {$lib}");
+            self::$lib = new $class();
+            if (!self::$lib instanceof $class) {
+                throw new \Exception("Crypt->__construct(): Unable to load the cryptography library: {$lib}");
+            }
         }
-        self::$lib::initKey($key);
+        self::$lib->initKey($key);
         self::memzero($key);
     }
 
@@ -111,9 +112,9 @@ class Crypt
      * @access public
      * @static
      */
-    public static function encrypt($plaintext, $base64 = true)
+    public function encrypt($plaintext, $base64 = true)
     {
-        return self::$lib::encrypt($plaintext, $base64);
+        return self::$lib->encrypt($plaintext, $base64);
     }
 
     /**
@@ -126,8 +127,8 @@ class Crypt
      * @access public
      * @static
      */
-    public static function decrypt($cipher, $base64 = true)
+    public function decrypt($cipher, $base64 = true)
     {
-        return self::$lib::decrypt($cipher, $base64, $redactCC);
+        return self::$lib->decrypt($cipher, $base64);
     }
 }

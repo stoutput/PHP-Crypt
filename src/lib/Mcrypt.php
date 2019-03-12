@@ -2,7 +2,7 @@
 
 namespace BenjaminStout\Crypt\lib;
 
-class Mcrypt extends Crypt
+class Mcrypt implements CryptInterface
 {
     /**
      * Constructor
@@ -10,8 +10,20 @@ class Mcrypt extends Crypt
      */
     public function __construct()
     {
+        if (!extension_loaded('mcrypt')) {
+            throw new \Exception("Mcrypt->__construct(): Mcrypt PHP extension is not loaded.");
+        }
     }
 
+    /**
+     * Fetches or generates, then saves, the current encryption key
+     *
+     * @param string $plaintext
+     * @param bool $base64 [true]
+     * @return string $cipher
+     * @access public
+     * @static
+     */
     public static function initKey($key)
     {
         Config::write('key', $key);
