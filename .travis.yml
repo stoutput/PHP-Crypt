@@ -16,7 +16,7 @@ matrix:
       env: INSTALL_SODIUM=1 PREFER_LOWEST=1
 
 before_install:
-  - if [[ $INSTALL_SODIUM == 1 ]]; then sudo add-apt-repository ppa:ondrej/php -y; sudo apt-get update -q; sudo apt-get install libsodium-dev -y; fi
+  - if [[ $INSTALL_SODIUM == 1 ]]; then sudo add-apt-repository ppa:ondrej/php -y; sudo apt-get update -q; sudo apt-get install libsodium-dev build-essential -y; fi
 
 install:
   - if [[ $PREFER_LOWEST != 1 ]]; then composer install --prefer-dist --no-interaction; fi
