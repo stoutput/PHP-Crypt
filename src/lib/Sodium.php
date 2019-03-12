@@ -11,7 +11,7 @@ class Sodium implements CryptInterface
      */
     public function __construct()
     {
-        if (!extension_loaded('sodium')) {
+        if (!extension_loaded('sodium') && !extension_loaded('libsodium')) {
             throw new \Exception("Sodium->__construct(): Sodium PHP extension is not loaded.");
         }
     }
@@ -23,7 +23,6 @@ class Sodium implements CryptInterface
      * @param bool $base64 [true]
      * @return string $cipher
      * @access public
-     * @static
      */
     public function initKey($key)
     {
@@ -37,7 +36,6 @@ class Sodium implements CryptInterface
      * @param bool $base64 [true]
      * @return string $cipher
      * @access public
-     * @static
      */
     public function encrypt($plaintext, $base64 = true)
     {
@@ -63,7 +61,6 @@ class Sodium implements CryptInterface
      * @param bool $base64 [true]
      * @return string $plaintext
      * @access public
-     * @static
      */
     public function decrypt($cipher, $base64 = true)
     {
