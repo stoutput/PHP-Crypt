@@ -9,6 +9,10 @@ PHP-Crypt allows you to quickly integrate a suite of modern cryptographic librar
 
 * PHP-Crypt is easily extensible – just drop an implementation of your favorite cryptography library into src/lib, and call `new Crypt('<yourClass>')` when instantiating PHP-Crypt. It couldn't be easier! While you're at it, [submit a PR](https://github.com/benjaminstout/php-crypt/pull/new/master)!
 
+## Prerequisites
+
+* PHP >= 5.6
+* If on PHP < 7.2, and you would like to use the Sodium library, make sure to [install the libsodium PHP extension](https://paragonie.com/book/pecl-libsodium/read/00-intro.md).
 
 ## Installation
 
