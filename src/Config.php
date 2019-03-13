@@ -29,7 +29,7 @@ class Config
         if (empty(static::$default)) {
             static::$default = static::$config;
         }
-    } 
+    }
 
     /**
      * Merges passed array with config array, overwriting duplicates
