@@ -5,7 +5,16 @@ namespace BenjaminStout\Crypt\lib;
 class Mcrypt implements CryptInterface
 {
     /**
+     * Cryptography library name associated with this class
+     *
+     * @access private
+     */
+    private $libName = 'Mcrypt';
+
+    /**
      * Constructor
+     *
+     * @throws \Exception extension unloaded
      * @access public
      */
     public function __construct()
@@ -18,14 +27,15 @@ class Mcrypt implements CryptInterface
     /**
      * Fetches or generates, then saves, the current encryption key
      *
-     * @param string $plaintext
-     * @param bool $base64 [true]
-     * @return string $cipher
+     * @param string $key
+     * @return string $index
      * @access public
      */
     public function initKey($key)
     {
-        Config::write('key', $key);
+        $index = "key{$this->libName}";
+        Config::write($index, $key);
+        return $index;
     }
 
     /**

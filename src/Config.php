@@ -5,12 +5,31 @@ namespace BenjaminStout\Crypt;
 class Config
 {
     private static $config = [
-        'key' => null,                                  // Currently-set encryption key
-        'keyPath' => __DIR__ . '..' . DS . 'keys',      // Path to key store (default is ../keys)
+        'keyPath' => __DIR__ . DS . '..' . DS . 'keys', // Absolute path to key store, no trailing slash (default is ../keys)
+        'keySodium' => null,                            // Holds the currently-set Sodium encryption key
+        'keyOpenssl' => null,                           // Holds the currently-set OpenSSL encryption key
+        'keyMcrypt' => null,                            // Holds the currently-set Mcrypt encryption key
         'keyPathSodium' => null,                        // Unique path to Sodium key (used if valid)
         'keyPathOpenssl' => null,                       // Unique path to OpenSSL key (used if valid)
         'keyPathMcrypt' => null,                        // Unique path to Mcrypt key (used if valid)
     ];
+
+    private static $default = [];
+
+
+    public static function reset()
+    {
+        if (!empty(static::$default)) {
+            static::$config = static::$default;
+        }
+    }
+
+    public static function backup()
+    {
+        if (empty(static::$default)) {
+            static::$default = static::$config;
+        }
+    } 
 
     /**
      * Merges passed array with config array, overwriting duplicates
@@ -21,6 +40,7 @@ class Config
      */
     public static function merge($arr)
     {
+        static::backup();
         static::$config = array_merge(static::$config, $arr);
         return true;
     }
@@ -39,7 +59,8 @@ class Config
     }
 
     /**
-     * Sets the value in static::$config at index $key to $val
+     * Sets the value on static::$config[$key] to $val
+     * Also supports array of key/value pairs as first arg
      *
      * @var string key
      * @var mixed $val
@@ -48,15 +69,11 @@ class Config
      */
     public static function write($key, $val = null)
     {
-        if (is_string($key) || is_integer($key)) {
-            static::$config[$key] = $val;
-            return true;
-        } elseif (is_array($key)) {
-            foreach ($key as $key => $val) {
-                static::$config[$key] = $val;
-            }
-            return true;
+        if (is_array($key)) {
+            return static::merge($key);
         }
-        return false;
+        static::backup();
+        static::$config[$key] = $val;
+        return true;
     }
 }

@@ -36,18 +36,28 @@ class Crypt
     {
         require_once 'Autoload.php';
         $class = __NAMESPACE__ . '\lib\\' . $lib;
-        if (!self::$lib instanceof $class) {
-            self::$lib = new $class();
-            if (!self::$lib instanceof $class) {
+
+        // Initialize cryptography library
+        if (!static::$lib instanceof $class) {
+            static::$lib = new $class();
+            if (!static::$lib instanceof $class) {
                 throw new \Exception("Crypt->__construct(): Unable to load the cryptography library: {$lib}");
             }
         }
-        self::$lib->initKey($key);
-        self::memzero($key);
+
+        // Initialize key
+        $this->initKey($lib, $key);
+        if ($key !== null) {
+            if (is_callable('sodium_memzero')) {  // Prefer sodium's memzero if available
+                sodium_memzero($key);
+            } else {
+                self::memzero($key);
+            }
+        }
     }
 
     /**
-     * Attempts to zero a variable's physical memory as much as possible
+     * Best-attempt method to zero a variable's physical memory as much as PHP allows
      *
      * @param &$var
      * @access public
@@ -75,9 +85,8 @@ class Crypt
      * @param string $path
      * @return bool success
      * @access public
-     * @static
      */
-    public static function setPath($lib, $path)
+    public function setPath($lib, $path)
     {
         if (!is_string($lib) || !is_string($path)) {
             return false;
@@ -102,6 +111,88 @@ class Crypt
     }
 
     /**
+     * Fetches and returns the contents of a key file for a specified library
+     *
+     * @param string $lib
+     * @return string or bool false on failure
+     * @throws \Exception invalid keyPath directory
+     * @access public
+     */
+    public function fetchKeyFile($lib)
+    {
+        if (!is_string($lib)) {
+            return false;
+        }
+
+        // Option 1: test for existence and validity of keyPath<lib> file
+        $path = Config::read("keyPath{$lib}");
+        if (is_string($path)) {
+            $pInfo = pathinfo($path);
+            // Key path extension must be "key", filename must be lowercase, and file must exist to use
+            if (!empty($pInfo['extension']) && $pInfo == 'key' && !empty($pInfo['filename']) && $pInfo['filename'] == strtolower($pInfo['filename']) && file_exists($path)) {
+                return file_get_contents($path);
+            }
+        }
+
+        // Option 2: fall back to use keyPath folder
+        $path = Config::read("keyPath");
+        if (is_string($path)) {
+            // Build path to key file
+            $path = $path . (substr($path, -1) == DS ? '' : DS) . strtolower($lib) . '.key';
+            if (is_file($path)) {
+                return file_get_contents($path);
+            }
+        }
+
+        return false;
+    }
+
+    public function saveKeyFile($lib, $key, $custom = false)
+    {
+        $keyPath = Config::read('keyPath');
+        if (!file_exists($keyPath)) {
+            mkdir($keyPath, 0775, true);
+        }
+        if (!is_dir($keyPath)) {  // Path is either a file or a directory we can't create
+            throw new \Exception("Crypt->fetchKeyFile(): Invalid keyPath directory: $path");
+        }
+        $keyPath .= substr($keyPath, -1) == DS ? $lib : DS . $lib;
+        $keyPath .= empty($custom) ? '.key' : '.custom.key';
+        file_put_contents($keyPath, $key);
+        return $keyPath;
+    }
+
+    /**
+     * Fetches or generates, then saves, an encryption key for the passed library
+     *
+     * @param string $key
+     * @return bool $success
+     * @access public
+     */
+    public function initKey($lib, $key = null)
+    {
+        if ($key === null) {
+            $key = $this->fetchKeyFile($lib);
+            if (!empty($key)) {
+                static::$lib->validateKey($key);
+            } else {
+                $key = static::$lib->generateKey();
+                Config::write("keyPath{$lib}", $this->saveKeyFile($lib, $key));
+            }
+        } else {
+            static::$lib->validateKey($key);
+            Config::write("keyPath{$lib}", $this->saveKeyFile($lib, $key, true));
+        }
+        $success = Config::write("key{$lib}", $key);
+        if (is_callable('sodium_memzero')) {  // Prefer sodium's memzero if available
+            sodium_memzero($key);
+        } else {
+            self::memzero($key);
+        }
+        return $success;
+    }
+
+    /**
      * Encrypts a string and returns the cipher
      * (optional) You may choose to base64 encode the returned cipher
      *
@@ -109,11 +200,10 @@ class Crypt
      * @param bool $base64 [true]
      * @return string $cipher
      * @access public
-     * @static
      */
     public function encrypt($plaintext, $base64 = true)
     {
-        return self::$lib->encrypt($plaintext, $base64);
+        return static::$lib->encrypt($plaintext, $base64);
     }
 
     /**
@@ -124,10 +214,9 @@ class Crypt
      * @param bool $base64 [true]
      * @return string $cipher
      * @access public
-     * @static
      */
     public function decrypt($cipher, $base64 = true)
     {
-        return self::$lib->decrypt($cipher, $base64);
+        return static::$lib->decrypt($cipher, $base64);
     }
 }

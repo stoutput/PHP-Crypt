@@ -5,15 +5,22 @@ namespace BenjaminStout\Crypt\lib;
 interface CryptInterface
 {
     /**
-     * Fetches or generates, then saves, the current encryption key
+     * Generates and returns a randomly-generated encryption key using a library-specific method
      *
-     * @param string $plaintext
-     * @param bool $base64 [true]
-     * @return string $cipher
+     * @return string $key
      * @access public
-     * @static
      */
-    public function initKey($key);
+    public function generateKey();
+
+    /**
+     * Validates encryption key against a set of library-specific rules
+     *
+     * @param string $key
+     * @return bool valid, else
+     * @throws \Exception invalid
+     * @access public
+     */
+    public function validateKey($key = null);
 
     /**
      * Encrypts (and base64 encodes) using Sodium encryption

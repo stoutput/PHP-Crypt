@@ -1,3 +1,6 @@
+# –––– Project ––––
+keys/
+
 # –––– Composer ––––
 composer.lock
 /vendor/
