@@ -25,17 +25,32 @@ class Mcrypt implements CryptInterface
     }
 
     /**
-     * Fetches or generates, then saves, the current encryption key
+     * Generates and returns a randomly-generated encryption key
+     * Uses random_compat for random_bytes() if PHP < 7
      *
-     * @param string $key
-     * @return string $index
+     * @return string $key
      * @access public
      */
-    public function initKey($key)
+    public function generateKey()
     {
-        $index = "key{$this->libName}";
-        Config::write($index, $key);
-        return $index;
+        return random_bytes(32);
+    }
+
+    /**
+     * Validates encryption key against a set of library-specific rules
+     *
+     * @param string $key
+     * @return bool valid, else
+     * @throws \Exception invalid
+     * @access public
+     */
+    public function validateKey($key = null)
+    {
+        $keyLen = mb_strlen($key, '8bit');
+        if ($keyLen != 32 || $keyLen != 24 || $keyLen != 16) {
+            throw new \Exception('Sodium->validateKey(): Invalid key length, must be 16, 24, or 32 bytes long.');
+        }
+        return true;
     }
 
     /**

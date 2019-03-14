@@ -28,7 +28,8 @@ class Sodium extends Crypt implements CryptInterface
     }
 
     /**
-     * Generates and returns a randomly-generated encryption key using a library-specific method
+     * Generates and returns a randomly-generated encryption key
+     * Uses random_compat for random_bytes() if PHP < 7
      *
      * @return string $key
      * @access public

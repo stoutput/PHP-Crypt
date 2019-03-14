@@ -52,12 +52,13 @@ class Openssl implements CryptInterface
             }
         }
         if ($this->cipher === null) {
-            throw new \Exception("Openssl->__construct(): No supported [preferred] ciphers found.")
+            throw new \Exception("Openssl->__construct(): No supported [preferred] ciphers found.");
         }
     }
 
     /**
-     * Generates and returns a randomly-generated encryption key using a library-specific method
+     * Generates and returns a randomly-generated encryption key
+     * Uses random_compat for random_bytes() if PHP < 7
      *
      * @return string $key
      * @access public
@@ -102,7 +103,7 @@ class Openssl implements CryptInterface
         $ciphertext = openssl_random_pseudo_bytes(openssl_cipher_iv_length($cipher)) . openssl_encrypt($plaintext, $this->cipher, Config::read('key'), OPENSSL_RAW_DATA, $iv);
 
         if (stripos($this->cipher, '-gcm') === false) {  // If not a GCM-based encryption method
-            $ciphertext = hash_hmac('sha256', $ciphertext, Config::read('key') . $ciphertext;  // Include MAC for authenticated encyption
+            $ciphertext = hash_hmac('sha256', $ciphertext, Config::read('key') . $ciphertext);  // Include MAC for authenticated encyption
         }
 
         if ($base64) {  // Optionally, base 64 encode encrypted data
@@ -135,7 +136,7 @@ class Openssl implements CryptInterface
         $hmacLen = stripos($this->cipher, '-gcm') === false ? 32 : 0;
 
         if ($hmacLen != 0 && !hash_equals(mb_substr($ciphertext, 0, $hmacLen), hash_hmac('sha256', mb_substr($ciphertext, $hmacLen, null, '8bit'), $key, true))) {  // PHP 5.6+ timing attack safe comparison
-            throw new \Exception("Openssl::decrypt(): MAC is invalid, unable to authenticate.")
+            throw new \Exception("Openssl::decrypt(): MAC is invalid, unable to authenticate.");
         }
 
         return openssl_decrypt(
