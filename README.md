@@ -1,5 +1,5 @@
 # PHP-Crypt
-<img src="https://img.shields.io/badge/stability-experimental-orange.svg?style=flat-square"> <a href="https://travis-ci.com/benjaminstout/php-crypt"><img src="https://img.shields.io/travis/com/benjaminstout/php-crypt/master.svg?style=flat-square" alt="build:"></a> <a href="https://codecov.io/gh/benjaminstout/php-crypt"><img src="https://img.shields.io/codecov/c/github/benjaminstout/php-crypt.svg?style=flat-square"></a> <img src="https://img.shields.io/github/languages/code-size/benjaminstout/php-crypt.svg?style=flat-square"> <img src="https://img.shields.io/github/license/benjaminstout/php-crypt.svg?color=%23307ABE&style=flat-square"> <img src="https://img.shields.io/github/downloads/benjaminstout/php-crypt/total.svg?style=flat-square">
+<img src="https://img.shields.io/badge/stability-experimental-orange.svg?style=flat-square"> <a href="https://travis-ci.com/benjaminstout/php-crypt"><img src="https://img.shields.io/travis/com/benjaminstout/php-crypt/master.svg?style=flat-square" alt="build:"></a> <a href="https://codecov.io/gh/benjaminstout/php-crypt"><img src="https://img.shields.io/codecov/c/github/benjaminstout/php-crypt.svg?style=flat-square"></a> <img src="https://img.shields.io/github/languages/code-size/benjaminstout/php-crypt.svg?style=flat-square"> [<img src="https://img.shields.io/github/license/benjaminstout/php-crypt.svg?color=%23307ABE&style=flat-square">](LICENSE.txt) <img src="https://img.shields.io/github/downloads/benjaminstout/php-crypt/total.svg?style=flat-square">
 
 A standalone, extensible, lightweight cryptography interface for PHP. With support for: [libsodium](https://github.com/jedisct1/libsodium) (NaCl), [OpenSSL](http://php.net/manual/en/book.openssl.php), [Mcrypt](http://php.net/manual/en/book.mcrypt.php), and more.
 
@@ -95,4 +95,4 @@ Use of the Mcrypt library is *__highly__* disadvised, and is only included in PH
 
 ## License
 
-This project is licensed under the terms of the [MIT license](LICENSE.md).
+This project is licensed under the terms of the [MIT license](LICENSE.text).
