@@ -12,14 +12,15 @@ PHP-Crypt allows you to quickly integrate a suite of modern cryptographic librar
 ## Prerequisites
 
 * PHP >= 5.6
-* If on PHP < 7.2, [install libsodium and the sodium PHP extension](https://paragonie.com/book/pecl-libsodium/read/00-intro.md) to enable support for the Sodium library.
+* If on PHP < 7.2, [install libsodium and the sodium PHP extension](https://paragonie.com/book/pecl-libsodium/read/00-intro.md) to enable full support for the Sodium library.
+* Composer
 
 ## Installation
 
 PHP-Crypt supports installation in your PHP app through either [composer](https://getcomposer.org/) or [git submodule](https://git-scm.com/book/en/v2/Git-Tools-Submodules).
 
 __Composer__: `composer require benjaminstout/php-crypt`  
-__Git__: `git add submodule git@github.com:benjaminstout/php-crypt.git <path/to/folder>`
+__Git__: `git add submodule git@github.com:benjaminstout/php-crypt.git <path/to/folder> && composer update -d <path/to/folder>`
 
 *__Note__*: If using with CakePHP, don't forget to add `Plugin::load('BenjaminStout/Crypt')` to your `bootstrap.php`.
 
