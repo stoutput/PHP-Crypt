@@ -8,6 +8,7 @@ matrix:
     - php: 7.3
       env: PHPCS=1
     - php: 7.2
+      env: COVERAGE=1
     - php: 7.1
       env: INSTALL_SODIUM=1
     - php: 7.0
@@ -24,8 +25,11 @@ install:
   - if [[ $INSTALL_SODIUM == 1 ]]; then if [[ ${TRAVIS_PHP_VERSION:0:3} == "5.6" ]]; then pecl install -f libsodium-1.0.6; else pecl install -f libsodium; fi; fi
 
 script:
-  - sh -c "if [ '$PHPCS' != '1' ]; then vendor/bin/phpunit; fi"
-  - sh -c "if [ '$PHPCS' = '1' ]; then ./vendor/bin/phpcs -n -p --extensions=php --standard=PSR2 ./src ./tests; fi"
+  - if [[ $COVERAGE == 1 ]]; then vendor/bin/phpunit --coverage-clover=coverage.xml; else vendor/bin/phpunit; fi
+  - if [[ $PHPCS == 1 ]]; then ./vendor/bin/phpcs -n -p --extensions=php --standard=PSR2 ./src ./tests; fi
+
+after_success:
+  - if [[ $COVERAGE == 1 ]]; then bash <(curl -s https://codecov.io/bash) -t d7ef710e-0649-494c-a539-d93e8c3e4b19; fi
 
 notifications:
   email: false
