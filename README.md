@@ -95,4 +95,4 @@ Use of the Mcrypt library is *__highly__* disadvised, and is only included in PH
 
 ## License
 
-This project is licensed under the terms of the [MIT license](LICENSE.text).
+This project is licensed under the terms of the [MIT license](LICENSE.txt).
