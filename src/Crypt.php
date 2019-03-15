@@ -43,6 +43,7 @@ class Crypt
             define('DS', DIRECTORY_SEPARATOR);
         }
         require_once __DIR__ . DS . 'Autoload.php';
+        $lib = ucfirst(strtolower($lib));
         $class = __NAMESPACE__ . '\lib\\' . $lib;
 
         // Initialize cryptography library
