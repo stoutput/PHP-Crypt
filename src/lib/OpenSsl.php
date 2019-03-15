@@ -2,6 +2,8 @@
 
 namespace BenjaminStout\Crypt\lib;
 
+use BenjaminStout\Crypt\Config;
+
 class Openssl implements CryptInterface
 {
     /**
@@ -79,7 +81,7 @@ class Openssl implements CryptInterface
     public function validateKey($key = null)
     {
         if (mb_strlen($key, '8bit') !== 32) {
-            throw new \Exception("Openssl->__decrypt(): 256-bit key required.");
+            throw new \Exception("Openssl->__validateKey(): 256-bit key required.");
         }
         return true;
     }

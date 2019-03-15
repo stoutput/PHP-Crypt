@@ -1,8 +1,6 @@
 <?php
 namespace BenjaminStout\Crypt;
 
-define('DS', DIRECTORY_SEPARATOR);
-
 spl_autoload_extensions(".php");
 
 spl_autoload_register(

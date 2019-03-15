@@ -2,6 +2,8 @@
 
 namespace BenjaminStout\Crypt\lib;
 
+use BenjaminStout\Crypt\Config;
+
 class Mcrypt implements CryptInterface
 {
     /**
@@ -10,6 +12,10 @@ class Mcrypt implements CryptInterface
      * @access private
      */
     private $libName = 'Mcrypt';
+
+    private $cipher = MCRYPT_3DES;
+
+    private $mode = MCRYPT_MODE_ECB;
 
     /**
      * Constructor
@@ -33,7 +39,7 @@ class Mcrypt implements CryptInterface
      */
     public function generateKey()
     {
-        return random_bytes(32);
+        return random_bytes(mcrypt_get_key_size($this->cipher, $this->mode));
     }
 
     /**
@@ -47,8 +53,8 @@ class Mcrypt implements CryptInterface
     public function validateKey($key = null)
     {
         $keyLen = mb_strlen($key, '8bit');
-        if ($keyLen != 32 || $keyLen != 24 || $keyLen != 16) {
-            throw new \Exception('Sodium->validateKey(): Invalid key length, must be 16, 24, or 32 bytes long.');
+        if ($keyLen != 32 && $keyLen != 24 && $keyLen != 16) {
+            throw new \Exception('Mcrypt->validateKey(): Invalid key length, must be 16, 24, or 32 bytes long.');
         }
         return true;
     }
@@ -66,10 +72,10 @@ class Mcrypt implements CryptInterface
         if (empty($plaintext)) {
             return '';
         }
-        $secretKey = self::mcrypt_key();
-        $iv_size = mcrypt_get_iv_size(MCRYPT_3DES, MCRYPT_MODE_ECB);
+        $secretKey = Config::read("key{$this->libName}");
+        $iv_size = mcrypt_get_iv_size($this->cipher, $this->mode);
         $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-        $cipher = mcrypt_encrypt(MCRYPT_3DES, $secretKey, $plaintext, MCRYPT_MODE_ECB, $iv);
+        $cipher = mcrypt_encrypt($this->cipher, $secretKey, $plaintext, $this->mode, $iv);
         if ($base64) {
             return base64_encode($cipher);
         }
@@ -86,13 +92,13 @@ class Mcrypt implements CryptInterface
      */
     public function decrypt($cipher, $base64 = true)
     {
-        $secretKey = self::mcrypt_key();
-        $iv_size = mcrypt_get_iv_size(MCRYPT_3DES, MCRYPT_MODE_ECB);
+        $secretKey = Config::read("key{$this->libName}");
+        $iv_size = mcrypt_get_iv_size($this->cipher, $this->mode);
         $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
         if ($base64) {
             $cipher = base64_decode($cipher);
         }
-        $plaintext = mcrypt_decrypt(MCRYPT_3DES, $secretKey, $cipher, MCRYPT_MODE_ECB, $iv);
+        $plaintext = mcrypt_decrypt($this->cipher, $secretKey, $cipher, $this->mode, $iv);
         if (is_numeric($cipher) && !is_numeric($plaintext)) {
             $plaintext = $cipher;
         }

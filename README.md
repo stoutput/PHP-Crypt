@@ -13,6 +13,7 @@ PHP-Crypt allows you to quickly integrate a suite of modern cryptographic librar
 
 * PHP >= 5.6
 * If on PHP < 7.2, [install libsodium and the sodium PHP extension](https://paragonie.com/book/pecl-libsodium/read/00-intro.md) to enable full support for the Sodium library.
+* If on PHP >= 7.2, [install the Mcrypt PHP extension through PECL](https://pecl.php.net/package/mcrypt) to enable support for Mcrypt. Note: production usage of Mcrypt is *highly* discouraged, and should only be used for backwards compatability.
 * Composer
 
 ## Installation
@@ -22,27 +23,30 @@ PHP-Crypt supports installation in your PHP app through either [composer](https:
 __Composer__: `composer require benjaminstout/php-crypt`  
 __Git__: `git add submodule git@github.com:benjaminstout/php-crypt.git <path/to/folder> && composer update -d <path/to/folder>`
 
-*__Note__*: If using with CakePHP, don't forget to add `Plugin::load('BenjaminStout/Crypt')` to your `bootstrap.php`.
+```php
+use BenjaminStout\Crypt\Crypt;
+require_once '<path/to/folder>/src/Crypt.php';
+```
 
 
 ## Getting Started
 
 __Instantiate a new instance of PHP-Crypt__:  
 ```php
-$this->Crypt = new Crypt('<library>', ['key' => '<key>']);
+$this->Crypt = new Crypt('<library>', '<key>');
 ```
 *Where*:  
 `<library>` is the cryptography library to use (Sodium [default], Openssl, Mcrypt, ...)  
-`<key>` is an optional key to use for encryption.
+`<key>` is an *optional* key string to use for encryption.
 
 __Encrypt a string__:  
 ```php
-$this->Crypt::encrypt('string');
+$this->Crypt->encrypt('string');
 ```
 
 __Decrypt ciphertext__:  
 ```php
-$this->Crypt::decrypt('eNcRyPtEd');
+$this->Crypt->decrypt('eNcRyPtEd');
 ```
 
 

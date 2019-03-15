@@ -3,9 +3,8 @@
 namespace BenjaminStout\Crypt\lib;
 
 use BenjaminStout\Crypt\Config;
-use BenjaminStout\Crypt\Crypt;
 
-class Sodium extends Crypt implements CryptInterface
+class Sodium implements CryptInterface
 {
     /**
      * Cryptography library name associated with this class

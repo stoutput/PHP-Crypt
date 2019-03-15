@@ -28,13 +28,21 @@ class Crypt
      * Constructor
      *
      * @var string $lib
-     * @var string $key
+     * @var array $options
+     * Ex.
+     * [
+     *      'key' => 'key12345',
+     *      'keyPath' => 
+     * ]
      * @throws Exception (unable to instantiate cryptography library)
      * @access public
      */
     public function __construct($lib = 'Sodium', $key = null)
     {
-        require_once 'Autoload.php';
+        if (!defined('DS')) {
+            define('DS', DIRECTORY_SEPARATOR);
+        }
+        require_once __DIR__ . DS . 'Autoload.php';
         $class = __NAMESPACE__ . '\lib\\' . $lib;
 
         // Initialize cryptography library
