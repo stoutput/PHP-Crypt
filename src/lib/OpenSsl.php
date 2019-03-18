@@ -101,8 +101,10 @@ class Openssl implements CryptInterface
             return '';
         }
 
-        // Initialization vector + encrypted data
-        $ciphertext = openssl_random_pseudo_bytes(openssl_cipher_iv_length($cipher)) . openssl_encrypt($plaintext, $this->cipher, Config::read('key'), OPENSSL_RAW_DATA, $iv);
+        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($this->cipher));  // Initialization vector
+        $tag = '';
+        $ciphertext = openssl_encrypt($plaintext, $this->cipher, Config::read('key'), OPENSSL_RAW_DATA, $iv, $tag);
+        $ciphertext = $iv . $tag . $ciphertext;
 
         if (stripos($this->cipher, '-gcm') === false) {  // If not a GCM-based encryption method
             $ciphertext = hash_hmac('sha256', $ciphertext, Config::read('key') . $ciphertext);  // Include MAC for authenticated encyption
@@ -135,6 +137,7 @@ class Openssl implements CryptInterface
         }
 
         $ivLen= openssl_cipher_iv_length($this->cipher);
+        $tagLen = 16;
         $hmacLen = stripos($this->cipher, '-gcm') === false ? 32 : 0;
 
         if ($hmacLen != 0 && !hash_equals(mb_substr($ciphertext, 0, $hmacLen), hash_hmac('sha256', mb_substr($ciphertext, $hmacLen, null, '8bit'), $key, true))) {  // PHP 5.6+ timing attack safe comparison
@@ -142,11 +145,12 @@ class Openssl implements CryptInterface
         }
 
         return openssl_decrypt(
-            mb_substr($ciphertext, $ivLen + $hmacLen, null, '8bit'),
+            mb_substr($ciphertext, $hmacLen + $ivLen + $tagLen, null, '8bit'),
             $this->cipher,
-            $key,
+            Config::read('key'),
             OPENSSL_RAW_DATA,
-            mb_substr($ciphertext, $hmacLen, $ivLen, '8bit')
+            mb_substr($ciphertext, $hmacLen, $ivLen, '8bit'),           // IV
+            mb_substr($ciphertext, $hmacLen + $ivLen, $tagLen, '8bit')  // Tag
         );
     }
 }
