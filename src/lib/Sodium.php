@@ -94,10 +94,10 @@ class Sodium implements CryptInterface
         if (!empty($base64)) {
             $cipher = base64_decode($cipher);
             if ($cipher === false) {
-                throw new \Exception('Crypto::decrypt_sodium [ERROR]: Invalid base 64 string, unable to decode ciphertext.');
+                throw new \Exception('Sodium->decrypt(): Invalid base 64 string, unable to decode ciphertext.');
             }
             if (mb_strlen($cipher, '8bit') < (SODIUM_CRYPTO_SECRETBOX_NONCEBYTES + SODIUM_CRYPTO_SECRETBOX_MACBYTES)) {
-                throw new \Exception('Crypto::decrypt_sodium [ERROR]: Ciphertext truncated, unable to decrypt.');
+                throw new \Exception('Sodium->decrypt(): Ciphertext truncated, unable to decrypt.');
             }
         }
 
@@ -106,7 +106,7 @@ class Sodium implements CryptInterface
 
         $plaintext = sodium_crypto_secretbox_open($ciphertext, $nonce, Config::read("key{$this->libName}"));
         if ($plaintext === false) {
-             throw new \Exception('Crypto::decrypt_sodium [ERROR]: Ciphertext has been tampered with, decryption failed.');
+             throw new \Exception('Sodium->decrypt(): Ciphertext has been tampered with, decryption failed.');
         }
 
         sodium_memzero($ciphertext);

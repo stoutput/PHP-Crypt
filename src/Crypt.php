@@ -9,20 +9,12 @@ use BenjaminStout\Crypt\Config;
 class Crypt
 {
     /**
-     *
-     *
-     * @access protected
-     * @static
-     */
-    protected static $key = null;
-
-    /**
      * Holds the current cryptography library class object
      *
      * @access private
      * @static
      */
-    private static $lib = null;
+    private $lib = null;
 
     /**
      * Constructor
@@ -39,17 +31,14 @@ class Crypt
      */
     public function __construct($lib = 'Sodium', $key = null)
     {
-        if (!defined('DS')) {
-            define('DS', DIRECTORY_SEPARATOR);
-        }
-        require_once __DIR__ . DS . 'Autoload.php';
+        require_once __DIR__ . DIRECTORY_SEPARATOR . 'Autoload.php';
         $lib = ucfirst(strtolower($lib));
         $class = __NAMESPACE__ . '\lib\\' . $lib;
 
         // Initialize cryptography library
-        if (!static::$lib instanceof $class) {
-            static::$lib = new $class();
-            if (!static::$lib instanceof $class) {
+        if (!$this->lib instanceof $class) {
+            $this->lib = new $class();
+            if (!$this->lib instanceof $class) {
                 throw new \Exception("Crypt->__construct(): Unable to load the cryptography library: {$lib}");
             }
         }
@@ -183,13 +172,13 @@ class Crypt
         if ($key === null) {
             $key = $this->fetchKeyFile($lib);
             if (!empty($key)) {
-                static::$lib->validateKey($key);
+                $this->lib->validateKey($key);
             } else {
-                $key = static::$lib->generateKey();
+                $key = $this->lib->generateKey();
                 Config::write("keyPath{$lib}", $this->saveKeyFile($lib, $key));
             }
         } else {
-            static::$lib->validateKey($key);
+            $this->lib->validateKey($key);
             Config::write("keyPath{$lib}", $this->saveKeyFile($lib, $key, true));
         }
         $success = Config::write("key{$lib}", $key);
@@ -212,7 +201,7 @@ class Crypt
      */
     public function encrypt($plaintext, $base64 = true)
     {
-        return static::$lib->encrypt($plaintext, $base64);
+        return $this->lib->encrypt($plaintext, $base64);
     }
 
     /**
@@ -226,6 +215,6 @@ class Crypt
      */
     public function decrypt($cipher, $base64 = true)
     {
-        return static::$lib->decrypt($cipher, $base64);
+        return $this->lib->decrypt($cipher, $base64);
     }
 }

@@ -130,7 +130,7 @@ class Openssl implements CryptInterface
         if (!empty($base64)) {
             $ciphertext = base64_decode($ciphertext);
             if ($ciphertext === false) {
-                throw new Exception('Crypto::decrypt_openssl [ERROR]: Could not base64 decode ciphertext.');
+                throw new Exception('Openssl->decrypt(): Could not base64 decode ciphertext.');
             }
         }
 
@@ -138,7 +138,7 @@ class Openssl implements CryptInterface
         $hmacLen = stripos($this->cipher, '-gcm') === false ? 32 : 0;
 
         if ($hmacLen != 0 && !hash_equals(mb_substr($ciphertext, 0, $hmacLen), hash_hmac('sha256', mb_substr($ciphertext, $hmacLen, null, '8bit'), $key, true))) {  // PHP 5.6+ timing attack safe comparison
-            throw new \Exception("Openssl::decrypt(): MAC is invalid, unable to authenticate.");
+            throw new \Exception("Openssl->decrypt(): MAC is invalid, unable to authenticate.");
         }
 
         return openssl_decrypt(
