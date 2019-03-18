@@ -20,12 +20,7 @@ class Crypt
      * Constructor
      *
      * @var string $lib
-     * @var array $options
-     * Ex.
-     * [
-     *      'key' => 'key12345',
-     *      'keyPath' => 
-     * ]
+     * @var string $key
      * @throws Exception (unable to instantiate cryptography library)
      * @access public
      */
