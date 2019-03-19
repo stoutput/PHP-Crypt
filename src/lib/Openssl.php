@@ -159,7 +159,7 @@ class Openssl implements CryptInterface
                 $this->cipher,
                 Config::read("key{$this->libName}"),
                 OPENSSL_RAW_DATA,
-                mb_substr($ciphertext, $hmacLen, $ivLen, '8bit'),           // IV
+                mb_substr($ciphertext, $hmacLen, $ivLen, '8bit')            // IV
             );
         }
     }
