@@ -75,8 +75,6 @@ class Sodium implements CryptInterface
             $cipher = base64_encode($cipher);
         }
 
-        sodium_memzero($plaintext);
-
         return $cipher;
     }
 

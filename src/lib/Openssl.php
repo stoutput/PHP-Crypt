@@ -102,12 +102,12 @@ class Openssl implements CryptInterface
         }
 
         $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($this->cipher));  // Initialization vector
-        $tag = '';
-        $ciphertext = openssl_encrypt($plaintext, $this->cipher, Config::read('key'), OPENSSL_RAW_DATA, $iv, $tag);
+        $tag = '';  // Tag, filled by openssl_encrypt
+        $ciphertext = version_compare(PHP_VERSION, '7.1.0') >= 0 ? openssl_encrypt($plaintext, $this->cipher, Config::read("key{$this->libName}"), OPENSSL_RAW_DATA, $iv, $tag) : openssl_encrypt($plaintext, $this->cipher, Config::read("key{$this->libName}"), OPENSSL_RAW_DATA, $iv);
         $ciphertext = $iv . $tag . $ciphertext;
 
         if (stripos($this->cipher, '-gcm') === false) {  // If not a GCM-based encryption method
-            $ciphertext = hash_hmac('sha256', $ciphertext, Config::read('key') . $ciphertext);  // Include MAC for authenticated encyption
+            $ciphertext = hash_hmac('sha256', $ciphertext, Config::read("key{$this->libName}") . $ciphertext);  // Include MAC for authenticated encyption
         }
 
         if ($base64) {  // Optionally, base 64 encode encrypted data
@@ -137,20 +137,30 @@ class Openssl implements CryptInterface
         }
 
         $ivLen= openssl_cipher_iv_length($this->cipher);
-        $tagLen = 16;
+        $tagLen = version_compare(PHP_VERSION, '7.1.0') >= 0 ? 16 : 0;
         $hmacLen = stripos($this->cipher, '-gcm') === false ? 32 : 0;
 
         if ($hmacLen != 0 && !hash_equals(mb_substr($ciphertext, 0, $hmacLen), hash_hmac('sha256', mb_substr($ciphertext, $hmacLen, null, '8bit'), $key, true))) {  // PHP 5.6+ timing attack safe comparison
             throw new \Exception("Openssl->decrypt(): MAC is invalid, unable to authenticate.");
         }
 
-        return openssl_decrypt(
-            mb_substr($ciphertext, $hmacLen + $ivLen + $tagLen, null, '8bit'),
-            $this->cipher,
-            Config::read('key'),
-            OPENSSL_RAW_DATA,
-            mb_substr($ciphertext, $hmacLen, $ivLen, '8bit'),           // IV
-            mb_substr($ciphertext, $hmacLen + $ivLen, $tagLen, '8bit')  // Tag
-        );
+        if (version_compare(PHP_VERSION, '7.1.0') >= 0) {
+            return openssl_decrypt(
+                mb_substr($ciphertext, $hmacLen + $ivLen + $tagLen, null, '8bit'),
+                $this->cipher,
+                Config::read("key{$this->libName}"),
+                OPENSSL_RAW_DATA,
+                mb_substr($ciphertext, $hmacLen, $ivLen, '8bit'),           // IV
+                mb_substr($ciphertext, $hmacLen + $ivLen, $tagLen, '8bit')  // Tag
+            );
+        } else {
+            return openssl_decrypt(
+                mb_substr($ciphertext, $hmacLen + $ivLen + $tagLen, null, '8bit'),
+                $this->cipher,
+                Config::read("key{$this->libName}"),
+                OPENSSL_RAW_DATA,
+                mb_substr($ciphertext, $hmacLen, $ivLen, '8bit'),           // IV
+            );
+        }
     }
 }

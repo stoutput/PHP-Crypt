@@ -191,12 +191,18 @@ class Crypt
      *
      * @param string $plaintext
      * @param bool $base64 [true]
-     * @return string $cipher
+     * @return string $ciphertext
      * @access public
      */
     public function encrypt($plaintext, $base64 = true)
     {
-        return $this->lib->encrypt($plaintext, $base64);
+        $ciphertext = $this->lib->encrypt($plaintext, $base64);
+        if (is_callable('sodium_memzero')) {  // Prefer sodium's memzero if available
+            sodium_memzero($plaintext);
+        } else {
+            self::memzero($plaintext);
+        }
+        return $ciphertext;
     }
 
     /**
