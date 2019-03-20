@@ -50,6 +50,19 @@ class Crypt
     }
 
     /**
+     * Returns the library name of the currently set cryptography library
+     *
+     * @return string
+     */
+    public function getCryptLib()
+    {
+        if (empty($this->lib)) {
+            return '';
+        }
+        return $this->lib->libName;
+    }
+
+    /**
      * Best-attempt method to zero a variable's physical memory as much as PHP allows
      *
      * @param &$var

@@ -11,7 +11,7 @@ class Mcrypt implements CryptInterface
      *
      * @access private
      */
-    private $libName = 'Mcrypt';
+    public $libName = 'Mcrypt';
 
     /**
      * Constructor
@@ -88,6 +88,10 @@ class Mcrypt implements CryptInterface
      */
     public function decrypt($ciphertext, $base64 = true)
     {
+        if (empty($ciphertext)) {
+            return $ciphertext;
+        }
+
         if ($base64) {
             $ciphertext = base64_decode($ciphertext);
         }

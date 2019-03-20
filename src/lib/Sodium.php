@@ -11,7 +11,7 @@ class Sodium implements CryptInterface
      *
      * @access private
      */
-    private $libName = 'Sodium';
+    public $libName = 'Sodium';
 
     /**
      * Constructor
@@ -59,7 +59,7 @@ class Sodium implements CryptInterface
      *
      * @param string $plaintext
      * @param bool $base64 [true]
-     * @return string $cipher
+     * @return string $ciphertext
      * @access public
      */
     public function encrypt($plaintext, $base64 = true)
@@ -69,46 +69,46 @@ class Sodium implements CryptInterface
         }
 
         $nonce = random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
-        $cipher = $nonce . sodium_crypto_secretbox($plaintext, $nonce, Config::read("key{$this->libName}"));
+        $ciphertext = $nonce . sodium_crypto_secretbox($plaintext, $nonce, Config::read("key{$this->libName}"));
 
         if (!empty($base64)) {
-            $cipher = base64_encode($cipher);
+            $ciphertext = base64_encode($ciphertext);
         }
 
-        return $cipher;
+        return $ciphertext;
     }
 
     /**
      * Decrypts (and optionally converts from base64) using sodium decryption
      *
-     * @param string $cipher
+     * @param string $ciphertext
      * @param bool $base64 [true]
      * @return string $plaintext
      * @throws \Exception unable to decode/decrypt
      * @access public
      */
-    public function decrypt($cipher, $base64 = true)
+    public function decrypt($ciphertext, $base64 = true)
     {
+        if (empty($ciphertext)) {
+            return $ciphertext;
+        }
+
         if (!empty($base64)) {
-            $cipher = base64_decode($cipher);
-            if ($cipher === false) {
+            $ciphertext = base64_decode($ciphertext);
+            if ($ciphertext === false) {
                 throw new \Exception('Sodium->decrypt(): Invalid base 64 string, unable to decode ciphertext.');
             }
-            if (mb_strlen($cipher, '8bit') < (SODIUM_CRYPTO_SECRETBOX_NONCEBYTES + SODIUM_CRYPTO_SECRETBOX_MACBYTES)) {
+            if (mb_strlen($ciphertext, '8bit') < (SODIUM_CRYPTO_SECRETBOX_NONCEBYTES + SODIUM_CRYPTO_SECRETBOX_MACBYTES)) {
                 throw new \Exception('Sodium->decrypt(): Ciphertext truncated, unable to decrypt.');
             }
         }
 
-        $nonce = mb_substr($cipher, 0, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, '8bit');
-        $ciphertext = mb_substr($cipher, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, null, '8bit');
-
-        $plaintext = sodium_crypto_secretbox_open($ciphertext, $nonce, Config::read("key{$this->libName}"));
+        $plaintext = sodium_crypto_secretbox_open(mb_substr($ciphertext, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, null, '8bit'), mb_substr($ciphertext, 0, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, '8bit'), Config::read("key{$this->libName}"));
         if ($plaintext === false) {
              throw new \Exception('Sodium->decrypt(): Ciphertext has been tampered with, decryption failed.');
         }
 
         sodium_memzero($ciphertext);
-        sodium_memzero($cipher);
 
         return $plaintext;
     }

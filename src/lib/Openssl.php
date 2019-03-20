@@ -11,7 +11,7 @@ class Openssl implements CryptInterface
      *
      * @access private
      */
-    private $libName = 'Openssl';
+    public $libName = 'Openssl';
 
     /**
      * Constructor
@@ -87,6 +87,7 @@ class Openssl implements CryptInterface
         if (empty($plaintext)) {
             return '';
         }
+
         $cipher = Config::read("cipher{$this->libName}");
         $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($cipher));  // Initialization vector
         $tag = '';  // Tag, filled by openssl_encrypt
@@ -116,6 +117,10 @@ class Openssl implements CryptInterface
      */
     public function decrypt($ciphertext, $base64 = true)
     {
+        if (empty($ciphertext)) {
+            return $ciphertext;
+        }
+
         if (!empty($base64)) {
             $ciphertext = base64_decode($ciphertext);
             if ($ciphertext === false) {
