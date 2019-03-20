@@ -124,7 +124,7 @@ class Openssl implements CryptInterface
         }
 
         $cipher = Config::read("cipher{$this->libName}");
-        $ivLen= openssl_cipher_iv_length($cipher);
+        $ivLen = openssl_cipher_iv_length($cipher);
         $tagLen = version_compare(PHP_VERSION, '7.1.0') >= 0 ? 16 : 0;
         $hmacLen = stripos($cipher, '-gcm') === false ? 32 : 0;
 

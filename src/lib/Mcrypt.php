@@ -91,14 +91,19 @@ class Mcrypt implements CryptInterface
         if ($base64) {
             $ciphertext = base64_decode($ciphertext);
         }
+
         $cipher = Config::read("cipher{$this->libName}");
         $mode = Config::read("mode{$this->libName}");
         $ivLen = $mode == MCRYPT_MODE_ECB ? 0 : mcrypt_get_iv_size($cipher, $mode);  // IV not used for _ECB-based encryption mode
-        $iv = mb_substr($ciphertext, 0, $ivLen, '8bit');
-        $plaintext = mcrypt_decrypt($cipher, Config::read("key{$this->libName}"), mb_substr($ciphertext, $ivLen, null, '8bit'), $mode, $iv);
-        if (is_numeric($ciphertext) && !is_numeric($plaintext)) {
-            $plaintext = $cipher;
-        }
-        return $plaintext;
+
+        $plaintext = mcrypt_decrypt(
+            $cipher,
+            Config::read("key{$this->libName}"),
+            mb_substr($ciphertext, $ivLen, null, '8bit'),
+            $mode,
+            mb_substr($ciphertext, 0, $ivLen, '8bit')
+        );
+
+        return rtrim($plaintext, "\0"); // Return plaintext without null-padding
     }
 }

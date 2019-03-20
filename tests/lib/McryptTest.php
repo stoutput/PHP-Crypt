@@ -42,13 +42,12 @@ class McryptTest extends CryptTestCase
 
         // Decrypt
         $decrypted = $this->Crypt->decrypt($ciphertext, false);
-        $expected = $plaintext . str_repeat("\0", 24 - mb_strlen($plaintext, '8bit'));  // expect mcrypt to null-pad to 24 bytes
-        $this->assertSame($expected, $decrypted);
+        $this->assertSame($plaintext, $decrypted);
     }
 
     public function testEncryptDecryptBase64()
     {
-        $plaintext = " plain old string ";  // 24 bytes
+        $plaintext = " plain old string ";
 
         // Encrypt
         $ciphertext = $this->Crypt->encrypt($plaintext, true);
@@ -57,13 +56,12 @@ class McryptTest extends CryptTestCase
 
         // Decrypt
         $decrypted = $this->Crypt->decrypt($ciphertext, true);
-        $expected = $plaintext . str_repeat("\0", 24 - mb_strlen($plaintext, '8bit'));  // expect mcrypt to null-pad to 24 bytes
-        $this->assertSame($expected, $decrypted);
+        $this->assertSame($plaintext, $decrypted);
     }
 
     public function testDecryptExceptions()
     {
-        $plaintext = " plain old string ";  // 24 bytes
+        $plaintext = " plain old string ";
 
         // Encrypt
         $ciphertext = $this->Crypt->encrypt($plaintext, false);
@@ -72,7 +70,6 @@ class McryptTest extends CryptTestCase
 
         // Decrypt
         $decrypted = $this->Crypt->decrypt($ciphertext, false);
-        $expected = $plaintext . str_repeat("\0", 24 - mb_strlen($plaintext, '8bit'));  // expect mcrypt to null-pad to 24 bytes
-        $this->assertSame($expected, $decrypted);
+        $this->assertSame($plaintext, $decrypted);
     }
 }
