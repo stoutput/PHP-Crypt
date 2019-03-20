@@ -73,7 +73,7 @@ class Mcrypt implements CryptInterface
             return '';
         }
         $iv = mcrypt_create_iv(mcrypt_get_iv_size($this->cipher, $this->mode), MCRYPT_RAND);
-        $cipher = mcrypt_encrypt($this->cipher, Config::read("key{$this->libName}"), $plaintext, $this->mode, $iv);
+        $cipher = $iv . mcrypt_encrypt($this->cipher, Config::read("key{$this->libName}"), $plaintext, $this->mode, $iv);
         if ($base64) {
             return base64_encode($cipher);
         }
@@ -90,11 +90,12 @@ class Mcrypt implements CryptInterface
      */
     public function decrypt($ciphertext, $base64 = true)
     {
-        $iv = mcrypt_create_iv(mcrypt_get_iv_size($this->cipher, $this->mode), MCRYPT_RAND);
+        $ivLen = mcrypt_get_iv_size($this->cipher, $this->mode);
         if ($base64) {
             $ciphertext = base64_decode($ciphertext);
         }
-        $plaintext = mcrypt_decrypt($this->cipher, Config::read("key{$this->libName}"), $ciphertext, $this->mode, $iv);
+        $iv = mb_substr($ciphertext, 0, $ivLen, '8bit');
+        $plaintext = mcrypt_decrypt($this->cipher, Config::read("key{$this->libName}"), mb_substr($ciphertext, $ivLen, null, '8bit'), $this->mode, $iv);
         if (is_numeric($ciphertext) && !is_numeric($plaintext)) {
             $plaintext = $cipher;
         }
