@@ -13,10 +13,6 @@ class Mcrypt implements CryptInterface
      */
     private $libName = 'Mcrypt';
 
-    private $cipher = MCRYPT_3DES;
-
-    private $mode = MCRYPT_MODE_ECB;
-
     /**
      * Constructor
      *
@@ -39,7 +35,7 @@ class Mcrypt implements CryptInterface
      */
     public function generateKey()
     {
-        return random_bytes(mcrypt_get_key_size($this->cipher, $this->mode));
+        return random_bytes(mcrypt_get_key_size(Config::read("cipher{$this->libName}"), Config::read("mode{$this->libName}")));
     }
 
     /**
@@ -64,7 +60,7 @@ class Mcrypt implements CryptInterface
      *
      * @param string $plaintext
      * @param bool $base64 [true]
-     * @return string $cipher
+     * @return string $ciphertext
      * @access public
      */
     public function encrypt($plaintext, $base64 = true)
@@ -72,12 +68,14 @@ class Mcrypt implements CryptInterface
         if (empty($plaintext)) {
             return '';
         }
-        $iv = mcrypt_create_iv(mcrypt_get_iv_size($this->cipher, $this->mode), MCRYPT_RAND);
-        $cipher = $iv . mcrypt_encrypt($this->cipher, Config::read("key{$this->libName}"), $plaintext, $this->mode, $iv);
+        $cipher = Config::read("cipher{$this->libName}");
+        $mode = Config::read("mode{$this->libName}");
+        $iv = $mode == MCRYPT_MODE_ECB ? '' : mcrypt_create_iv(mcrypt_get_iv_size($cipher, $mode), MCRYPT_RAND);  // IV not used for _ECB-based encryption mode
+        $ciphertext = $iv . mcrypt_encrypt($cipher, Config::read("key{$this->libName}"), $plaintext, $mode, $iv);
         if ($base64) {
-            return base64_encode($cipher);
+            return base64_encode($ciphertext);
         }
-        return $cipher;
+        return $ciphertext;
     }
 
     /**
@@ -90,12 +88,14 @@ class Mcrypt implements CryptInterface
      */
     public function decrypt($ciphertext, $base64 = true)
     {
-        $ivLen = mcrypt_get_iv_size($this->cipher, $this->mode);
         if ($base64) {
             $ciphertext = base64_decode($ciphertext);
         }
+        $cipher = Config::read("cipher{$this->libName}");
+        $mode = Config::read("mode{$this->libName}");
+        $ivLen = $mode == MCRYPT_MODE_ECB ? 0 : mcrypt_get_iv_size($cipher, $mode);  // IV not used for _ECB-based encryption mode
         $iv = mb_substr($ciphertext, 0, $ivLen, '8bit');
-        $plaintext = mcrypt_decrypt($this->cipher, Config::read("key{$this->libName}"), mb_substr($ciphertext, $ivLen, null, '8bit'), $this->mode, $iv);
+        $plaintext = mcrypt_decrypt($cipher, Config::read("key{$this->libName}"), mb_substr($ciphertext, $ivLen, null, '8bit'), $mode, $iv);
         if (is_numeric($ciphertext) && !is_numeric($plaintext)) {
             $plaintext = $cipher;
         }

@@ -14,25 +14,6 @@ class Openssl implements CryptInterface
     private $libName = 'Openssl';
 
     /**
-     * Current cipher method (initialized in constructor)
-     *
-     * @access private
-     */
-    private $cipher = null;
-
-    /**
-     * A list of OpenSSL cipher methods in descending order of preference
-     * Used by constructor to choose best available cipher
-     *
-     * @access private
-     */
-    private $cipherPrefs = [
-        'aes-256-gcm',          // Fast, secure, and supports authenticated encryption
-        'aes-256-ccm',          // Slower than GCM, but supports authenticated encryption
-        'aes-256-cbc',          // Secure, but does not support authenticated encryption, requiring manual computation
-    ];
-
-    /**
      * Constructor
      *
      * @throws \Exception extension unloaded/no supported cipher
@@ -43,18 +24,24 @@ class Openssl implements CryptInterface
         if (!extension_loaded('openssl')) {
             throw new \Exception("Openssl->__construct(): OpenSSL PHP extension is not loaded.");
         }
-        $cipherPrefs = array_fill_keys($this->cipherPrefs, false);
-        foreach (openssl_get_cipher_methods() as $cipher) {
-            $cipherPrefs[$cipher] = true;
-        }
-        foreach ($cipherPrefs as $cipher => $supported) {
-            if ($supported) {
-                $this->cipher = $cipher;
-                break;
+        if (Config::read("cipher{$this->libName}") === null) {
+            $cipherPrefs = Config::read("cipherPrefs{$this->libName}");
+            if (empty($cipherPrefs)) {  // If config value was empty
+                $cipherPrefs = ['aes-256-gcm', 'aes-256-ccm', 'aes-256-cbc'];  // Default to some 256-bit encryption methods
             }
-        }
-        if ($this->cipher === null) {
-            throw new \Exception("Openssl->__construct(): No supported [preferred] ciphers found.");
+            $cipherPrefs = array_fill_keys($cipherPrefs, false);
+            foreach (openssl_get_cipher_methods() as $cipher) {
+                $cipherPrefs[$cipher] = true;
+            }
+            foreach ($cipherPrefs as $cipher => $supported) {
+                if ($supported) {
+                    Config::write("cipher{$this->libName}", $cipher);
+                    break;
+                }
+            }
+            if (Config::read("cipher{$this->libName}") === null) {
+                throw new \Exception("Openssl->__construct(): No supported [preferred] ciphers found.");
+            }
         }
     }
 
@@ -100,13 +87,13 @@ class Openssl implements CryptInterface
         if (empty($plaintext)) {
             return '';
         }
-
-        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($this->cipher));  // Initialization vector
+        $cipher = Config::read("cipher{$this->libName}");
+        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($cipher));  // Initialization vector
         $tag = '';  // Tag, filled by openssl_encrypt
-        $ciphertext = version_compare(PHP_VERSION, '7.1.0') >= 0 ? openssl_encrypt($plaintext, $this->cipher, Config::read("key{$this->libName}"), OPENSSL_RAW_DATA, $iv, $tag) : openssl_encrypt($plaintext, $this->cipher, Config::read("key{$this->libName}"), OPENSSL_RAW_DATA, $iv);
+        $ciphertext = version_compare(PHP_VERSION, '7.1.0') >= 0 ? openssl_encrypt($plaintext, $cipher, Config::read("key{$this->libName}"), OPENSSL_RAW_DATA, $iv, $tag) : openssl_encrypt($plaintext, $cipher, Config::read("key{$this->libName}"), OPENSSL_RAW_DATA, $iv);
         $ciphertext = $iv . $tag . $ciphertext;
 
-        if (stripos($this->cipher, '-gcm') === false) {  // If not a GCM-based encryption method
+        if (stripos($cipher, '-gcm') === false) {  // If not a GCM-based encryption method
             $ciphertext = hash_hmac('sha256', $ciphertext, Config::read("key{$this->libName}") . $ciphertext);  // Include MAC for authenticated encyption
         }
 
@@ -136,9 +123,10 @@ class Openssl implements CryptInterface
             }
         }
 
-        $ivLen= openssl_cipher_iv_length($this->cipher);
+        $cipher = Config::read("cipher{$this->libName}");
+        $ivLen= openssl_cipher_iv_length($cipher);
         $tagLen = version_compare(PHP_VERSION, '7.1.0') >= 0 ? 16 : 0;
-        $hmacLen = stripos($this->cipher, '-gcm') === false ? 32 : 0;
+        $hmacLen = stripos($cipher, '-gcm') === false ? 32 : 0;
 
         if ($hmacLen != 0 && !hash_equals(mb_substr($ciphertext, 0, $hmacLen), hash_hmac('sha256', mb_substr($ciphertext, $hmacLen, null, '8bit'), $key, true))) {  // PHP 5.6+ timing attack safe comparison
             throw new \Exception("Openssl->decrypt(): MAC is invalid, unable to authenticate.");
@@ -147,7 +135,7 @@ class Openssl implements CryptInterface
         if (version_compare(PHP_VERSION, '7.1.0') >= 0) {
             return openssl_decrypt(
                 mb_substr($ciphertext, $hmacLen + $ivLen + $tagLen, null, '8bit'),
-                $this->cipher,
+                $cipher,
                 Config::read("key{$this->libName}"),
                 OPENSSL_RAW_DATA,
                 mb_substr($ciphertext, $hmacLen, $ivLen, '8bit'),           // IV
@@ -156,7 +144,7 @@ class Openssl implements CryptInterface
         } else {
             return openssl_decrypt(
                 mb_substr($ciphertext, $hmacLen + $ivLen + $tagLen, null, '8bit'),
-                $this->cipher,
+                $cipher,
                 Config::read("key{$this->libName}"),
                 OPENSSL_RAW_DATA,
                 mb_substr($ciphertext, $hmacLen, $ivLen, '8bit')            // IV

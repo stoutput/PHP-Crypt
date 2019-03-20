@@ -12,6 +12,14 @@ class Config
         'keyPathSodium' => null,                        // Unique path to Sodium key (used if valid)
         'keyPathOpenssl' => null,                       // Unique path to OpenSSL key (used if valid)
         'keyPathMcrypt' => null,                        // Unique path to Mcrypt key (used if valid)
+        'cipherMcrypt' => MCRYPT_3DES,                  // Mcrypt cipher method
+        'cipherOpenssl' => null,                        // OpenSSL cipher method (initialized in constructor)
+        'modeMcrypt' => MCRYPT_MODE_ECB,                // Mcrypt encryption mode
+        'cipherPrefsOpenssl' => [                       // OpenSSL cipher methods in descending order of preference, used by constructor to choose best available cipher
+            'aes-256-gcm',                              // Fast, secure, and supports authenticated encryption
+            'aes-256-ccm',                              // Slower than GCM, but supports authenticated encryption
+            'aes-256-cbc',                              // Secure, but does not support authenticated encryption, requiring manual computation
+        ],
     ];
 
     private static $default = [];
