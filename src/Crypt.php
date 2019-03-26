@@ -124,7 +124,7 @@ class Crypt
      * @throws \Exception invalid keyPath directory
      * @access public
      */
-    public function fetchKeyFile($lib)
+    public function fetchKeyFromFile($lib)
     {
         if (!is_string($lib)) {
             return false;
@@ -135,7 +135,7 @@ class Crypt
         if (is_string($path)) {
             $pInfo = pathinfo($path);
             // Key path extension must be "key", filename must be lowercase, and file must exist to use
-            if (!empty($pInfo['extension']) && $pInfo == 'key' && !empty($pInfo['filename']) && $pInfo['filename'] == strtolower($pInfo['filename']) && file_exists($path)) {
+            if (!empty($pInfo['extension']) && strtolower($pInfo['extension']) == 'key' && !empty($pInfo['filename']) && $pInfo['filename'] == strtolower($pInfo['filename']) && file_exists($path)) {
                 return file_get_contents($path);
             }
         }
@@ -153,14 +153,14 @@ class Crypt
         return false;
     }
 
-    public function saveKeyFile($lib, $key, $custom = false)
+    public function saveKeyToFile($lib, $key, $custom = false)
     {
         $keyPath = Config::read('keyPath');
         if (!file_exists($keyPath)) {
             mkdir($keyPath, 0775, true);
         }
         if (!is_dir($keyPath)) {  // Path is either a file or a directory we can't create
-            throw new \Exception("Crypt->fetchKeyFile(): Invalid keyPath directory: $path");
+            throw new \Exception("Crypt->fetchKeyFromFile(): Invalid keyPath directory: $path");
         }
         $keyPath .= substr($keyPath, -1) == DS ? $lib : DS . $lib;
         $keyPath .= empty($custom) ? '.key' : '.custom.key';
@@ -178,16 +178,16 @@ class Crypt
     public function initKey($lib, $key = null)
     {
         if ($key === null) {
-            $key = $this->fetchKeyFile($lib);
+            $key = $this->fetchKeyFromFile($lib);
             if (!empty($key)) {
                 $this->lib->validateKey($key);
             } else {
                 $key = $this->lib->generateKey();
-                Config::write("keyPath{$lib}", $this->saveKeyFile($lib, $key));
+                Config::write("keyPath{$lib}", $this->saveKeyToFile($lib, $key));
             }
         } else {
             $this->lib->validateKey($key);
-            Config::write("keyPath{$lib}", $this->saveKeyFile($lib, $key, true));
+            Config::write("keyPath{$lib}", $this->saveKeyToFile($lib, $key, true));
         }
         $success = Config::write("key{$lib}", $key);
         if (is_callable('sodium_memzero')) {  // Prefer sodium's memzero if available
