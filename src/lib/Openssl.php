@@ -138,22 +138,22 @@ class Openssl implements CryptInterface
         }
 
         if (version_compare(PHP_VERSION, '7.1.0') >= 0) {
-            return openssl_decrypt(
+            return rtrim(openssl_decrypt(
                 mb_substr($ciphertext, $hmacLen + $ivLen + $tagLen, null, '8bit'),
                 $cipher,
                 Config::read("key{$this->libName}"),
                 OPENSSL_RAW_DATA,
                 mb_substr($ciphertext, $hmacLen, $ivLen, '8bit'),           // IV
                 mb_substr($ciphertext, $hmacLen + $ivLen, $tagLen, '8bit')  // Tag
-            );
+            ), "\0");
         } else {
-            return openssl_decrypt(
+            return rtrim(openssl_decrypt(
                 mb_substr($ciphertext, $hmacLen + $ivLen + $tagLen, null, '8bit'),
                 $cipher,
                 Config::read("key{$this->libName}"),
                 OPENSSL_RAW_DATA,
                 mb_substr($ciphertext, $hmacLen, $ivLen, '8bit')            // IV
-            );
+            ), "\0");
         }
     }
 }
