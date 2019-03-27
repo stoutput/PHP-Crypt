@@ -98,7 +98,7 @@ class Openssl implements CryptInterface
         $ciphertext = version_compare(PHP_VERSION, '7.1.0') >= 0 ? openssl_encrypt($plaintext, $cipher, Config::read("key{$this->libName}"), OPENSSL_RAW_DATA, $iv, $tag) : openssl_encrypt($plaintext, $cipher, Config::read("key{$this->libName}"), OPENSSL_RAW_DATA, $iv);
         $ciphertext = $iv . $tag . $ciphertext;
 
-        if (substr($cipher, -4) !== '-gcm') {  // If not a GCM-based encryption method
+        if (substr($cipher, -4) !== '-gcm' && substr($cipher, -4) !== '-ccm') {  // If not a GCM or CCM-based encryption method
             $ciphertext = hash_hmac('sha256', $ciphertext, Config::read("key{$this->libName}"), true) . $ciphertext;  // Include MAC for authenticated encyption
         }
 
@@ -135,7 +135,7 @@ class Openssl implements CryptInterface
         $cipher = Config::read("cipher{$this->libName}");
         $ivLen = openssl_cipher_iv_length($cipher);
         $tagLen = 16;
-        $hmacLen = substr($cipher, -4) !== '-gcm' ? 32 : 0;
+        $hmacLen = substr($cipher, -4) == '-gcm' || substr($cipher, -4) == '-ccm' ? 0 : 32; // Skip hmac extrapolation if cipher is AEAD (GCM/CCM)
 
         // Manual authenticated MAC verification
         if ($hmacLen != 0 && !hash_equals(mb_substr($ciphertext, 0, $hmacLen, '8bit'), hash_hmac('sha256', mb_substr($ciphertext, $hmacLen, null, '8bit'), Config::read("key{$this->libName}"), true))) {  // PHP 5.6+ timing attack safe comparison
