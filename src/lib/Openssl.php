@@ -33,7 +33,11 @@ class Openssl implements CryptInterface
             foreach (openssl_get_cipher_methods() as $cipher) {
                 $cipherPrefs[$cipher] = true;
             }
+            $php7orLess = version_compare(PHP_VERSION, '7.1.0') < 0;
             foreach ($cipherPrefs as $cipher => $supported) {
+                if ($php7orLess && (substr($cipher, -4) == '-gcm' || substr($cipher, -4) == '-ccm')) {
+                    continue; // GCM & CCM ciphers unsupported on PHP <= 7.0
+                }
                 if ($supported) {
                     Config::write("cipher{$this->libName}", $cipher);
                     break;
@@ -94,8 +98,8 @@ class Openssl implements CryptInterface
         $ciphertext = version_compare(PHP_VERSION, '7.1.0') >= 0 ? openssl_encrypt($plaintext, $cipher, Config::read("key{$this->libName}"), OPENSSL_RAW_DATA, $iv, $tag) : openssl_encrypt($plaintext, $cipher, Config::read("key{$this->libName}"), OPENSSL_RAW_DATA, $iv);
         $ciphertext = $iv . $tag . $ciphertext;
 
-        if (stripos($cipher, '-gcm') === false) {  // If not a GCM-based encryption method
-            $ciphertext = hash_hmac('sha256', $ciphertext, Config::read("key{$this->libName}") . $ciphertext);  // Include MAC for authenticated encyption
+        if (substr($cipher, -4) !== '-gcm') {  // If not a GCM-based encryption method
+            $ciphertext = hash_hmac('sha256', $ciphertext, Config::read("key{$this->libName}"), true) . $ciphertext;  // Include MAC for authenticated encyption
         }
 
         if ($base64) {  // Optionally, base 64 encode encrypted data
@@ -130,30 +134,31 @@ class Openssl implements CryptInterface
 
         $cipher = Config::read("cipher{$this->libName}");
         $ivLen = openssl_cipher_iv_length($cipher);
-        $tagLen = version_compare(PHP_VERSION, '7.1.0') >= 0 ? 16 : 0;
-        $hmacLen = stripos($cipher, '-gcm') === false ? 32 : 0;
+        $tagLen = 16;
+        $hmacLen = substr($cipher, -4) !== '-gcm' ? 32 : 0;
 
-        if ($hmacLen != 0 && !hash_equals(mb_substr($ciphertext, 0, $hmacLen), hash_hmac('sha256', mb_substr($ciphertext, $hmacLen, null, '8bit'), $key, true))) {  // PHP 5.6+ timing attack safe comparison
+        // Manual authenticated MAC verification
+        if ($hmacLen != 0 && !hash_equals(mb_substr($ciphertext, 0, $hmacLen, '8bit'), hash_hmac('sha256', mb_substr($ciphertext, $hmacLen, null, '8bit'), Config::read("key{$this->libName}"), true))) {  // PHP 5.6+ timing attack safe comparison
             throw new \Exception("Openssl->decrypt(): MAC is invalid, unable to authenticate.");
         }
 
         if (version_compare(PHP_VERSION, '7.1.0') >= 0) {
-            return rtrim(openssl_decrypt(
+            return openssl_decrypt(  // With tag
                 mb_substr($ciphertext, $hmacLen + $ivLen + $tagLen, null, '8bit'),
                 $cipher,
                 Config::read("key{$this->libName}"),
                 OPENSSL_RAW_DATA,
                 mb_substr($ciphertext, $hmacLen, $ivLen, '8bit'),           // IV
                 mb_substr($ciphertext, $hmacLen + $ivLen, $tagLen, '8bit')  // Tag
-            ), "\0");
+            );
         } else {
-            return rtrim(openssl_decrypt(
-                mb_substr($ciphertext, $hmacLen + $ivLen + $tagLen, null, '8bit'),
+            return openssl_decrypt(  // Without tag
+                mb_substr($ciphertext, $hmacLen + $ivLen, null, '8bit'),
                 $cipher,
                 Config::read("key{$this->libName}"),
                 OPENSSL_RAW_DATA,
                 mb_substr($ciphertext, $hmacLen, $ivLen, '8bit')            // IV
-            ), "\0");
+            );
         }
     }
 }
