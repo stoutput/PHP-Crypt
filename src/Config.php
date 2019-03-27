@@ -16,8 +16,8 @@ class Config
         'cipherOpenssl' => null,                        // OpenSSL cipher method (initialized in constructor)
         'modeMcrypt' => MCRYPT_MODE_ECB,                // Mcrypt encryption mode
         'cipherPrefsOpenssl' => [                       // OpenSSL cipher methods in descending order of preference, used by constructor to choose best available cipher
-            'aes-256-gcm',                              // Fast, secure, and supports authenticated encryption
-            'aes-256-ccm',                              // Slower than GCM, but supports authenticated encryption
+            'aes-256-gcm',                              // Fast, secure, and supports authenticated encryption (unsupported on PHP <= 7.0)
+            'aes-256-ccm',                              // Slower than GCM, but supports authenticated encryption (unsupported on PHP <= 7.0)
             'aes-256-cbc',                              // Secure, but does not support authenticated encryption, requiring manual computation
         ],
     ];
