@@ -162,7 +162,7 @@ class Crypt
         if (!is_dir($keyPath)) {  // Path is either a file or a directory we can't create
             throw new \Exception("Crypt->fetchKeyFromFile(): Invalid keyPath directory: $path");
         }
-        $keyPath .= substr($keyPath, -1) == DS ? $lib : DS . $lib;
+        $keyPath .= substr($keyPath, -1) == DS ? strtolower($lib) : DS . strtolower($lib);
         $keyPath .= empty($custom) ? '.key' : '.custom.key';
         file_put_contents($keyPath, $key);
         return $keyPath;
