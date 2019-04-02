@@ -132,7 +132,6 @@ class Crypt
 
         // Option 1: test for existence and validity of keyPath<lib> file
         $path = Config::read("keyPath{$lib}");
-        throw new \Exception(var_dump($path) . "\n" . var_dump(pathinfo($path)) . "\n" . var_dump(file_exists($path)));
         if (is_string($path)) {
             $pInfo = pathinfo($path);
             // Key path extension must be "key", filename must be lowercase, and file must exist to use
@@ -163,7 +162,7 @@ class Crypt
         if (!is_dir($keyPath)) {  // Path is either a file or a directory we can't create
             throw new \Exception("Crypt->fetchKeyFromFile(): Invalid keyPath directory: $path");
         }
-        $keyPath .= substr($keyPath, -1) == DS ? $lib : DS . $lib;
+        $keyPath .= substr($keyPath, -1) == DS ? strtolower($lib) : DS . strtolower($lib);
         $keyPath .= empty($custom) ? '.key' : '.custom.key';
         file_put_contents($keyPath, $key);
         return $keyPath;
