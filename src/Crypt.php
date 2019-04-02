@@ -132,8 +132,11 @@ class Crypt
 
         // Option 1: test for existence and validity of keyPath<lib> file
         $path = Config::read("keyPath{$lib}");
+        echo $path;
         if (is_string($path)) {
             $pInfo = pathinfo($path);
+            echo $pinfo;
+            echo file_exists($path);
             // Key path extension must be "key", filename must be lowercase, and file must exist to use
             if (!empty($pInfo['extension']) && strtolower($pInfo['extension']) == 'key' && !empty($pInfo['filename']) && $pInfo['filename'] == strtolower($pInfo['filename']) && file_exists($path)) {
                 return file_get_contents($path);
