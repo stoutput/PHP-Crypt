@@ -29,7 +29,7 @@ class CryptTest extends CryptTestCase
     public function testInitKey()
     {
         // Test – key is generated, saved to file, and set properly in Config
-        $testKeyFile = Config::read('keyPath') . DS . 'Sodium.key';
+        $testKeyFile = Config::read('keyPath') . DS . 'sodium.key';
         $this->assertTrue($this->Crypt->initKey('Sodium'));
         $this->assertFileExists($testKeyFile);
         $this->assertEquals($testKeyFile, Config::read('keyPathSodium'));
@@ -40,7 +40,7 @@ class CryptTest extends CryptTestCase
     {
         // Test – passed key is saved to file and set properly in Config
         $testKey = '01234567890123456789012345678901'; // 32 bytes
-        $testKeyFile = Config::read('keyPath') . DS . 'Sodium.custom.key';
+        $testKeyFile = Config::read('keyPath') . DS . 'sodium.custom.key';
         $this->assertTrue($this->Crypt->initKey('Sodium', $testKey));
         $this->assertFileExists($testKeyFile);
         $this->assertEquals($testKeyFile, Config::read('keyPathSodium'));
