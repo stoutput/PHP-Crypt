@@ -1,14 +1,14 @@
 <?php
 
-namespace BenjaminStout\Crypt\Tests;
+namespace BenjaminStout\PHPCrypt\Tests;
 
-use BenjaminStout\Crypt\Config;
-use BenjaminStout\Crypt\Tests\CryptTestCase;
+use BenjaminStout\PHPCrypt\Config;
+use BenjaminStout\PHPCrypt\Tests\CryptTestCase;
 
 /**
  * Class CryptTest
  *
- * @package BenjaminStout\Crypt\Tests
+ * @package BenjaminStout\PHPCrypt\Tests
  * @author  Benjamin Stout
  */
 class CryptTest extends CryptTestCase

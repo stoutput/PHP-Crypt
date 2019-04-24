@@ -1,8 +1,8 @@
 <?php
 
-namespace BenjaminStout\Crypt\lib;
+namespace BenjaminStout\PHPCrypt\lib;
 
-use BenjaminStout\Crypt\Config;
+use BenjaminStout\PHPCrypt\Config;
 
 class Sodium implements CryptInterface
 {

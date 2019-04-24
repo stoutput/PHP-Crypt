@@ -24,7 +24,7 @@ __Composer__: `composer require benjaminstout/php-crypt`
 __Git__: `git add submodule git@github.com:benjaminstout/php-crypt.git <path/to/folder> && composer update -d <path/to/folder>`
 
 ```php
-use BenjaminStout\Crypt\Crypt;
+use BenjaminStout\PHPCrypt\Crypt;
 require_once '<path/to/folder>/src/Crypt.php';
 ```
 

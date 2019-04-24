@@ -1,7 +1,7 @@
 <?php
-namespace BenjaminStout\Crypt;
+namespace BenjaminStout\PHPCrypt;
 
-use BenjaminStout\Crypt\Config;
+use BenjaminStout\PHPCrypt\Config;
 
 /**
  * Cryptography class to facilitate cryptographic measures

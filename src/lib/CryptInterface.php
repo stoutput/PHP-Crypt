@@ -1,6 +1,6 @@
 <?php
 
-namespace BenjaminStout\Crypt\lib;
+namespace BenjaminStout\PHPCrypt\lib;
 
 interface CryptInterface
 {

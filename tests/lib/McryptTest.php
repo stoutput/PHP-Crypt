@@ -1,16 +1,16 @@
 <?php
 
-namespace BenjaminStout\Crypt\Tests\lib;
+namespace BenjaminStout\PHPCrypt\Tests\lib;
 
-use BenjaminStout\Crypt\Config;
-use BenjaminStout\Crypt\Tests\CryptTestCase;
+use BenjaminStout\PHPCrypt\Config;
+use BenjaminStout\PHPCrypt\Tests\CryptTestCase;
 
 error_reporting(E_ALL ^ E_DEPRECATED);  // Disable Mcrypt deprecation error reporting
 
 /**
  * Class McryptTest
  *
- * @package BenjaminStout\Crypt\Tests\lib
+ * @package BenjaminStout\PHPCrypt\Tests\lib
  * @author  Benjamin Stout
  */
 class McryptTest extends CryptTestCase

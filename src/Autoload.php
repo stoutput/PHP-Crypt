@@ -1,5 +1,5 @@
 <?php
-namespace BenjaminStout\Crypt;
+namespace BenjaminStout\PHPCrypt;
 
 if (!defined('DS')) {
     define('DS', DIRECTORY_SEPARATOR);
