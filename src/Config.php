@@ -1,6 +1,6 @@
 <?php
 
-namespace BenjaminStout\Crypt;
+namespace BenjaminStout\PHPCrypt;
 
 class Config
 {

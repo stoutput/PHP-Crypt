@@ -1,16 +1,16 @@
 <?php
 
-namespace BenjaminStout\Crypt\Tests;
+namespace BenjaminStout\PHPCrypt\Tests;
 
-use BenjaminStout\Crypt\Crypt;
-use BenjaminStout\Crypt\Config;
+use BenjaminStout\PHPCrypt\Crypt;
+use BenjaminStout\PHPCrypt\Config;
 
 include __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Autoload.php';
 
 /**
  * Class CryptTest
  *
- * @package BenjaminStout\Crypt\Tests
+ * @package BenjaminStout\PHPCrypt\Tests
  * @author  Benjamin Stout
  */
 class CryptTestCase extends \PHPUnit_Framework_TestCase
