@@ -105,7 +105,7 @@ class Sodium implements CryptInterface
 
         $plaintext = sodium_crypto_secretbox_open(mb_substr($ciphertext, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, null, '8bit'), mb_substr($ciphertext, 0, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, '8bit'), Config::read("key{$this->libName}"));
         if ($plaintext === false) {
-             throw new \Exception('Sodium->decrypt(): Ciphertext has been tampered with, decryption failed.');
+             throw new \Exception('Sodium->decrypt(): Invalid ciphertext, decryption failed.');
         }
 
         sodium_memzero($ciphertext);

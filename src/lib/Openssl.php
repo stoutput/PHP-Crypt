@@ -116,7 +116,7 @@ class Openssl implements CryptInterface
      * @param bool $base64 [true]
      * @param string $cipher (optional)
      * @return string $plaintext
-     * @throws \Exception extension unable to decode/authenticate
+     * @throws \Exception unable to decode/authenticate/decrypt
      * @access public
      */
     public function decrypt($ciphertext, $base64 = true)
@@ -143,7 +143,7 @@ class Openssl implements CryptInterface
         }
 
         if (version_compare(PHP_VERSION, '7.1.0') >= 0) {
-            return openssl_decrypt(  // With tag
+            $plaintext = openssl_decrypt(  // With tag
                 mb_substr($ciphertext, $hmacLen + $ivLen + $tagLen, null, '8bit'),
                 $cipher,
                 Config::read("key{$this->libName}"),
@@ -152,7 +152,7 @@ class Openssl implements CryptInterface
                 mb_substr($ciphertext, $hmacLen + $ivLen, $tagLen, '8bit')  // Tag
             );
         } else {
-            return openssl_decrypt(  // Without tag
+            $plaintext = openssl_decrypt(  // Without tag
                 mb_substr($ciphertext, $hmacLen + $ivLen, null, '8bit'),
                 $cipher,
                 Config::read("key{$this->libName}"),
@@ -160,5 +160,10 @@ class Openssl implements CryptInterface
                 mb_substr($ciphertext, $hmacLen, $ivLen, '8bit')            // IV
             );
         }
+        if ($plaintext === false) {
+             throw new \Exception('Openssl->decrypt(): Invalid ciphertext, decryption failed.');
+        }
+
+        return $plaintext;
     }
 }

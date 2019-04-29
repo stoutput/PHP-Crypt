@@ -84,6 +84,7 @@ class Mcrypt implements CryptInterface
      * @param string $ciphertext
      * @param bool $base64 [true]
      * @return string $plaintext
+     * @throws \Exception unable to decode/decrypt
      * @access public
      */
     public function decrypt($ciphertext, $base64 = true)
@@ -94,6 +95,9 @@ class Mcrypt implements CryptInterface
 
         if ($base64) {
             $ciphertext = base64_decode($ciphertext);
+            if ($ciphertext === false) {
+                throw new \Exception('Mcrypt->decrypt(): Invalid base 64 string, unable to decode ciphertext.');
+            }
         }
 
         $cipher = Config::read("cipher{$this->libName}");
@@ -107,6 +111,9 @@ class Mcrypt implements CryptInterface
             $mode,
             mb_substr($ciphertext, 0, $ivLen, '8bit')
         );
+        if ($plaintext === false) {
+             throw new \Exception('Mcrypt->decrypt(): Invalid ciphertext, decryption failed.');
+        }
 
         return rtrim($plaintext, "\0"); // Return plaintext without null-padding
     }
