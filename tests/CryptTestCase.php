@@ -27,7 +27,7 @@ class CryptTestCase extends \PHPUnit_Framework_TestCase
     public function setUp($lib = 'Sodium')
     {
         Config::reset();
-        Config::write('keyPath', Config::read('keyPath') . DS . 'test');
+        Config::write('keyPath', __DIR__ . DS . '..' . DS . 'keys' . DS . 'test');
         $this->Crypt = new Crypt($lib);
     }
 

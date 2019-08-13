@@ -28,7 +28,6 @@ install:
 script:
   - if [[ $COVERAGE == 1 ]]; then vendor/bin/phpunit --coverage-clover=coverage.xml; else vendor/bin/phpunit; fi
   - if [[ $PHPCS == 1 ]]; then vendor/bin/phpcs -n -p --extensions=php --standard=PSR2 ./src ./tests; fi
-  - sudo mkdir -p /etc/keystore/openssl && sudo mkdir -p /etc/keystore/mcrypt && sudo mkdir -p /etc/keystore/sodium && sudo chmod -R 777 /etc/keystore
 
 after_success:
   - if [[ $COVERAGE == 1 ]]; then bash <(curl -s https://codecov.io/bash) -t d7ef710e-0649-494c-a539-d93e8c3e4b19; fi
