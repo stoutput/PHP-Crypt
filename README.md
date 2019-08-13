@@ -78,7 +78,7 @@ For security purposes, keys are stored in the filesystem well outside of WWW_ROO
   ```
   or, set it afterwards:
   ```php
-  Crypt::setPath('Openssl', '/path/to/openssl.key');
+  Crypt::setKeyPath('Openssl', '/path/to/openssl.key');
   ```
 
 
