@@ -5,7 +5,7 @@ namespace BenjaminStout\PHPCrypt;
 class Config
 {
     private static $config = [
-        'keyPath' => DS . 'etc' . DS . 'keystore',      // Absolute path to key store, no trailing slash (default is ../keys)
+        'keyPath' => __DIR__ . DS . '..' . DS . 'keys', // Absolute path to key store, no trailing slash (default is ../keys)
         'keySodium' => null,                            // Holds the currently-set Sodium encryption key
         'keyOpenssl' => null,                           // Holds the currently-set OpenSSL encryption key
         'keyMcrypt' => null,                            // Holds the currently-set Mcrypt encryption key
