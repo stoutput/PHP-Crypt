@@ -85,34 +85,30 @@ class Crypt
     }
 
     /**
-     * Sets the key path and subsequently initializes or re-initializes
-     * the encryption key for a specified library
+     * Sets the key path and subsequently re-initializes
+     * the encryption key for the specified library
      *
+     * @param string $lib
      * @param string $path
      * @return bool success
      * @access public
      */
-    public function setPath($lib, $path)
+    public function setKeyPath($lib, $path)
     {
         if (!is_string($lib) || !is_string($path)) {
             return false;
         }
 
         $lib = strtolower($lib);
-        $path = strtolower($lib);
-
-        if ($lib == 'all') {
-            if (!is_dir($path)) {
-                return false;
-            }
-            Config::write('keyPath', $path);
-            return true;
-        }
+        $path = strtolower($path);
 
         if (!is_file($path) || basename($path) !=  "$lib.key") {
             return false;
         }
-        Config::write('keyPath' . ucfirst($lib), $path);
+
+        Config::write('keyPath' . ($lib == 'all' ? '' : ucfirst($lib)), $path);
+        $this->initKey($lib);
+
         return true;
     }
 
@@ -129,6 +125,7 @@ class Crypt
         if (!is_string($lib)) {
             return false;
         }
+        $lib = ucfirst(strtolower($lib));
 
         // Option 1: test for existence and validity of keyPath<lib> file
         $path = Config::read("keyPath{$lib}");
@@ -177,6 +174,7 @@ class Crypt
      */
     public function initKey($lib, $key = null)
     {
+        $lib = ucfirst(strtolower($lib));
         if ($key === null) {
             $key = $this->fetchKeyFromFile($lib);
             if (!empty($key)) {

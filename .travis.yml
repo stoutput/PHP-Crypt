@@ -1,5 +1,4 @@
 language: php
-
 sudo: required
 
 matrix:
@@ -7,7 +6,8 @@ matrix:
   include:
     - php: 7.3
       env: MCRYPT=1 PHPCS=1
-    - php: 7.2
+    - dist: bionic
+      php: 7.2
       env: MCRYPT=1 COVERAGE=1
     - php: 7.1
       env: SODIUM=1
@@ -21,8 +21,7 @@ before_install:
 
 install:
   - if [[ $MCRYPT == 1 ]]; then apt-get update && apt-get install libmcrypt; yes "" | pecl install -f mcrypt-1.0.2; fi
-  - if [[ $PREFER_LOWEST != 1 ]]; then composer install --prefer-dist --no-interaction; fi
-  - if [[ $PREFER_LOWEST == 1 ]]; then composer update --prefer-dist --no-interaction --prefer-lowest --prefer-stable; fi
+  - if [[ $PREFER_LOWEST == 1 ]]; then composer update --prefer-dist --no-interaction --prefer-lowest --prefer-stable; else composer install --prefer-dist --no-interaction; fi
   - if [[ $SODIUM == 1 ]]; then if [[ ${TRAVIS_PHP_VERSION:0:3} == "5.6" ]]; then pecl install -f libsodium-1.0.6; else pecl install -f libsodium; fi; fi
 
 script:
