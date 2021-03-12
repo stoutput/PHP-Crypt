@@ -1,5 +1,5 @@
 # PHP-Crypt
-<img src="https://img.shields.io/badge/stability-beta-blue.svg?style=flat-square"> <a href="https://travis-ci.com/benjaminstout/PHP-Crypt"><img src="https://img.shields.io/travis/com/benjaminstout/PHP-Crypt/master.svg?style=flat-square" alt="build:"></a> <a href="https://codecov.io/gh/benjaminstout/php-crypt"><img src="https://img.shields.io/codecov/c/github/benjaminstout/php-crypt.svg?style=flat-square"></a> <img src="https://img.shields.io/github/languages/code-size/benjaminstout/php-crypt.svg?style=flat-square"> [<img src="https://img.shields.io/github/license/benjaminstout/php-crypt.svg?color=%23307ABE&style=flat-square">](LICENSE.txt)
+<img src="https://img.shields.io/badge/stability-beta-blue.svg?style=flat-square"> <a href="https://travis-ci.com/stoutput/PHP-Crypt"><img src="https://img.shields.io/travis/com/stoutput/PHP-Crypt/master.svg?style=flat-square" alt="build:"></a> <a href="https://codecov.io/gh/stoutput/php-crypt"><img src="https://img.shields.io/codecov/c/github/stoutput/php-crypt.svg?style=flat-square"></a> <img src="https://img.shields.io/github/languages/code-size/stoutput/php-crypt.svg?style=flat-square"> [<img src="https://img.shields.io/github/license/stoutput/php-crypt.svg?color=%23307ABE&style=flat-square">](LICENSE.txt)
 
 A standalone, extensible, lightweight cryptography interface for PHP. With support for: [libsodium](https://github.com/jedisct1/libsodium) (NaCl), [OpenSSL](http://php.net/manual/en/book.openssl.php), [Mcrypt](http://php.net/manual/en/book.mcrypt.php), and more.
 
@@ -7,7 +7,7 @@ PHP-Crypt allows you to quickly integrate a suite of modern cryptographic librar
 
 * PHP-Crypt features [*authenticated encryption*](https://en.wikipedia.org/wiki/Authenticated_encryption) straight out of the box (with [Sodium](https://libsodium.gitbook.io/doc/secret-key_cryptography/authenticated_encryption) or [OpenSSL](https://wiki.openssl.org/index.php/EVP_Authenticated_Encryption_and_Decryption))
 
-* PHP-Crypt is easily extensible – just drop an implementation of your favorite cryptography library into src/lib, and call `new Crypt('<yourClass>')` when instantiating PHP-Crypt. It couldn't be easier! While you're at it, [submit a PR](https://github.com/benjaminstout/php-crypt/pull/new/master)!
+* PHP-Crypt is easily extensible – just drop an implementation of your favorite cryptography library into src/lib, and call `new Crypt('<yourClass>')` when instantiating PHP-Crypt. It couldn't be easier! While you're at it, [submit a PR](https://github.com/stoutput/php-crypt/pull/new/master)!
 
 ## Prerequisites
 
@@ -21,7 +21,7 @@ PHP-Crypt allows you to quickly integrate a suite of modern cryptographic librar
 PHP-Crypt supports installation in your PHP app through either [composer](https://getcomposer.org/) or [git submodule](https://git-scm.com/book/en/v2/Git-Tools-Submodules).
 
 __Composer__: `composer require benjaminstout/php-crypt`  
-__Git__: `git add submodule git@github.com:benjaminstout/php-crypt.git <path/to/folder> && composer update -d <path/to/folder>`
+__Git__: `git add submodule git@github.com:stoutput/php-crypt.git <path/to/folder> && composer update -d <path/to/folder>`
 
 ```php
 use BenjaminStout\PHPCrypt\Crypt;
@@ -89,7 +89,7 @@ Run a `composer update --dev` to install phpunit in the project, then run `vendo
 
 ## Contributing
 
-All contributions are welcome and encouraged! Start a discussion by [opening an issue](https://github.com/benjaminstout/php-crypt/issues/new), then fork this repo, commit your work, and [submit a PR](https://github.com/benjaminstout/php-crypt/pull/new/master)!
+All contributions are welcome and encouraged! Start a discussion by [opening an issue](https://github.com/stoutput/php-crypt/issues/new), then fork this repo, commit your work, and [submit a PR](https://github.com/stoutput/php-crypt/pull/new/master)!
 
 
 ## Important Notes
