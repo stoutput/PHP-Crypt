@@ -37,7 +37,7 @@ $this->Crypt = new Crypt('<library>', '<key>');
 ```
 *Where*:  
 `<library>` is the cryptography library to use (Sodium [default], Openssl, Mcrypt, ...)  
-`<key>` is an *optional* key string to use for encryption.
+`<key>` is an *optional* key string to use for encryption. It must adhere to library's key requirements.
 
 __Encrypt a string__:  
 ```php
