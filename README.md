@@ -1,6 +1,8 @@
 # PHP-Crypt
 <img src="https://img.shields.io/badge/stability-beta-blue.svg?style=flat-square"> <a href="https://travis-ci.com/stoutput/PHP-Crypt"><img src="https://img.shields.io/travis/com/stoutput/PHP-Crypt/master.svg?style=flat-square" alt="build:"></a> <a href="https://codecov.io/gh/stoutput/php-crypt"><img src="https://img.shields.io/codecov/c/github/stoutput/php-crypt.svg?style=flat-square"></a> <img src="https://img.shields.io/github/languages/code-size/stoutput/php-crypt.svg?style=flat-square"> [<img src="https://img.shields.io/github/license/stoutput/php-crypt.svg?color=%23307ABE&style=flat-square">](LICENSE.txt)
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Y8Y81X7LER)
+
 A standalone, extensible, lightweight cryptography interface for PHP. With support for: [libsodium](https://github.com/jedisct1/libsodium) (NaCl), [OpenSSL](http://php.net/manual/en/book.openssl.php), [Mcrypt](http://php.net/manual/en/book.mcrypt.php), and more.
 
 PHP-Crypt allows you to quickly integrate a suite of modern cryptographic libraries into your PHP application, without the hassle of implementing advanced custom cryptographic methods by hand. PHP-Crypt prevents common cryptographic pitfalls, while providing the flexibility to choose between a suite of the latest cryptography libraries available for PHP. Usage is straightforward and highly extensible – comprised only of the minimum complexity necessary to ensure optimal security. PHP-Crypt makes swapping or integrating new cryptography libraries a breeze!
